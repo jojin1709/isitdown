@@ -55,7 +55,7 @@ export const SERVICES: ServiceDef[] = [
   { id: "upi", name: "UPI (NPCI)", url: "https://www.npci.org.in", category: "India", icon: "💳", domain: "npci.org.in" },
 
   // Finance
-  { id: "sbi", name: "State Bank of India (SBI)", url: "https://onlinesbi.sbi.bank.in", category: "Finance", icon: "🏦", domain: "sbi.co.in" },
+  { id: "sbi", name: "State Bank of India (SBI)", url: "https://onlinesbi.sbi.bank.in", category: "Finance", icon: "🏦", domain: "sbi.co.in", useFallbackIcon: true },
   { id: "hdfc", name: "HDFC Bank", url: "https://www.hdfcbank.com", category: "Finance", icon: "🏦", domain: "hdfcbank.com" },
   { id: "icici", name: "ICICI Bank", url: "https://www.icicibank.com", category: "Finance", icon: "🏦", domain: "icicibank.com" },
   { id: "axisbank", name: "Axis Bank", url: "https://www.axisbank.com", category: "Finance", icon: "🏦", domain: "axisbank.com" },

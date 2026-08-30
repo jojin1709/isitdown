@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SERVICES } from "@/lib/services";
 import { checkUrl } from "@/lib/checker";
+import ProblemReport from "@/components/ProblemReport";
 
 export const revalidate = 75;
 
@@ -117,6 +118,8 @@ export default async function ServiceStatusPage({ params }: Props) {
           IsItDown monitors {service.name} by sending live HTTP status requests directly from our server.
         </div>
       </div>
+
+      <ProblemReport serviceName={service.name} />
     </div>
   );
 }

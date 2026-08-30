@@ -18,6 +18,7 @@ export const SERVICES: ServiceDef[] = [
   { id: "telegram", name: "Telegram", url: "https://web.telegram.org", category: "Social", icon: "✈️", domain: "telegram.org" },
   { id: "reddit", name: "Reddit", url: "https://www.reddit.com", category: "Social", icon: "🤖", domain: "reddit.com" },
   { id: "linkedin", name: "LinkedIn", url: "https://www.linkedin.com", category: "Social", icon: "💼", domain: "linkedin.com" },
+  { id: "freefire", name: "Free Fire", url: "https://freefiremobile.com", category: "Social", icon: "🔥", domain: "freefiremobile.com" },
 
   // Shopping
   { id: "amazon", name: "Amazon", url: "https://www.amazon.com", category: "Shopping", icon: "📦", domain: "amazon.com" },
@@ -35,20 +36,28 @@ export const SERVICES: ServiceDef[] = [
   { id: "twitch", name: "Twitch", url: "https://www.twitch.tv", category: "Streaming", icon: "🎥", domain: "twitch.tv" },
 
   // Dev / AI
-  { id: "github", name: "GitHub", url: "https://github.com", category: "Dev/AI", icon: "🐙", domain: "github.com" },
+  { id: "gemini", name: "Google Gemini", url: "https://gemini.google.com", category: "Dev/AI", icon: "✨", domain: "gemini.google.com" },
   { id: "chatgpt", name: "ChatGPT", url: "https://chat.openai.com", category: "Dev/AI", icon: "🤖", domain: "openai.com" },
   { id: "claude", name: "Claude", url: "https://claude.ai", category: "Dev/AI", icon: "✳️", domain: "claude.ai" },
+  { id: "github", name: "GitHub", url: "https://github.com", category: "Dev/AI", icon: "🐙", domain: "github.com" },
   { id: "vercel", name: "Vercel", url: "https://vercel.com", category: "Dev/AI", icon: "▲", domain: "vercel.com" },
   { id: "google", name: "Google", url: "https://www.google.com", category: "Dev/AI", icon: "🔍", domain: "google.com" },
   { id: "gmail", name: "Gmail", url: "https://mail.google.com", category: "Dev/AI", icon: "✉️", domain: "mail.google.com" },
 
-  // India
+  // India & Telecom
   { id: "jio", name: "Jio", url: "https://www.jio.com", category: "India", icon: "📶", domain: "jio.com" },
   { id: "airtel", name: "Airtel", url: "https://www.airtel.in", category: "India", icon: "📡", domain: "airtel.in" },
+  { id: "vi", name: "Vi Vodafone Idea", url: "https://www.myvi.in", category: "India", icon: "📱", domain: "myvi.in" },
+  { id: "bsnl", name: "BSNL", url: "https://www.bsnl.co.in", category: "India", icon: "📡", domain: "bsnl.co.in" },
   { id: "irctc", name: "IRCTC", url: "https://www.irctc.co.in", category: "India", icon: "🚆", domain: "irctc.co.in" },
   { id: "paytm", name: "Paytm", url: "https://paytm.com", category: "India", icon: "💰", domain: "paytm.com" },
   { id: "phonepe", name: "PhonePe", url: "https://www.phonepe.com", category: "India", icon: "📱", domain: "phonepe.com" },
+  { id: "upi", name: "UPI (NPCI)", url: "https://www.npci.org.in", category: "India", icon: "💳", domain: "npci.org.in" },
 
-  // Finance
+  // Finance & Banking
+  { id: "sbi", name: "State Bank of India (SBI)", url: "https://www.onlinesbi.sbi", category: "Finance", icon: "🏦", domain: "onlinesbi.sbi" },
+  { id: "hdfc", name: "HDFC Bank", url: "https://www.hdfcbank.com", category: "Finance", icon: "🏦", domain: "hdfcbank.com" },
+  { id: "icici", name: "ICICI Bank", url: "https://www.icicibank.com", category: "Finance", icon: "🏦", domain: "icicibank.com" },
+  { id: "axisbank", name: "Axis Bank", url: "https://www.axisbank.com", category: "Finance", icon: "🏦", domain: "axisbank.com" },
   { id: "paypal", name: "PayPal", url: "https://www.paypal.com", category: "Finance", icon: "💳", domain: "paypal.com" },
 ];

@@ -9,6 +9,7 @@ type ServiceStatus = {
   name: string;
   domain?: string;
   icon?: string;
+  useFallbackIcon?: boolean;
   url: string;
   category: string;
   status: "up" | "down" | "slow";
@@ -25,6 +26,7 @@ export default function Dashboard() {
   const [lastChecked, setLastChecked] = useState<string | null>(null);
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"Status" | "Speed">("Status");
 
   async function load() {
     setLoading(true);
@@ -52,11 +54,19 @@ export default function Dashboard() {
         (!q || s.name.toLowerCase().includes(q))
     );
 
+    if (sortBy === "Speed") {
+      return [...filtered].sort((a, b) => {
+        if (a.responseTime === null) return 1;
+        if (b.responseTime === null) return -1;
+        return a.responseTime - b.responseTime;
+      });
+    }
+
     const STATUS_ORDER = { down: 0, slow: 1, up: 2 };
     return [...filtered].sort(
       (a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]
     );
-  }, [services, category, query]);
+  }, [services, category, query, sortBy]);
 
   const downCount = services.filter((s) => s.status === "down").length;
   const slowCount = services.filter((s) => s.status === "slow").length;
@@ -122,13 +132,7 @@ export default function Dashboard() {
         <CustomCheck />
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a service..."
-          className="flex-1 min-w-[180px] bg-card2 border border-line rounded-full px-4 py-2 text-sm outline-none focus:border-accent"
-        />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex gap-2 overflow-x-auto">
           {CATEGORIES.map((c) => (
             <button
@@ -143,6 +147,38 @@ export default function Dashboard() {
               {c}
             </button>
           ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search..."
+            className="flex-1 min-w-[150px] bg-card2 border border-line rounded-full px-4 py-1.5 text-sm outline-none focus:border-accent"
+          />
+
+          <div className="flex items-center gap-1 bg-card border border-line p-1 rounded-full text-xs font-semibold shrink-0">
+            <button
+              onClick={() => setSortBy("Status")}
+              className={`px-3 py-1 rounded-full transition-all ${
+                sortBy === "Status"
+                  ? "bg-accent text-white"
+                  : "text-white/50 hover:text-white"
+              }`}
+            >
+              Status
+            </button>
+            <button
+              onClick={() => setSortBy("Speed")}
+              className={`px-3 py-1 rounded-full transition-all ${
+                sortBy === "Speed"
+                  ? "bg-accent text-white"
+                  : "text-white/50 hover:text-white"
+              }`}
+            >
+              Speed
+            </button>
+          </div>
         </div>
       </div>
 

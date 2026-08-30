@@ -2,9 +2,10 @@ export type ServiceDef = {
   id: string;
   name: string;
   url: string;
-  category: "Social" | "Shopping" | "Streaming" | "India" | "Dev/AI" | "Finance";
+  category: "Social" | "Shopping" | "Streaming" | "Dev/AI" | "India" | "Finance";
   icon: string;
   domain: string;
+  useFallbackIcon?: boolean;
 };
 
 export const SERVICES: ServiceDef[] = [
@@ -18,7 +19,6 @@ export const SERVICES: ServiceDef[] = [
   { id: "telegram", name: "Telegram", url: "https://web.telegram.org", category: "Social", icon: "✈️", domain: "telegram.org" },
   { id: "reddit", name: "Reddit", url: "https://www.reddit.com", category: "Social", icon: "🤖", domain: "reddit.com" },
   { id: "linkedin", name: "LinkedIn", url: "https://www.linkedin.com", category: "Social", icon: "💼", domain: "linkedin.com" },
-  { id: "freefire", name: "Free Fire", url: "https://freefiremobile.com", category: "Social", icon: "🔥", domain: "freefiremobile.com" },
 
   // Shopping
   { id: "amazon", name: "Amazon", url: "https://www.amazon.com", category: "Shopping", icon: "📦", domain: "amazon.com" },
@@ -44,17 +44,17 @@ export const SERVICES: ServiceDef[] = [
   { id: "google", name: "Google", url: "https://www.google.com", category: "Dev/AI", icon: "🔍", domain: "google.com" },
   { id: "gmail", name: "Gmail", url: "https://mail.google.com", category: "Dev/AI", icon: "✉️", domain: "mail.google.com" },
 
-  // India & Telecom
+  // India
   { id: "jio", name: "Jio", url: "https://www.jio.com", category: "India", icon: "📶", domain: "jio.com" },
   { id: "airtel", name: "Airtel", url: "https://www.airtel.in", category: "India", icon: "📡", domain: "airtel.in" },
   { id: "vi", name: "Vi Vodafone Idea", url: "https://www.myvi.in", category: "India", icon: "📱", domain: "myvi.in" },
-  { id: "bsnl", name: "BSNL", url: "https://www.bsnl.co.in", category: "India", icon: "📡", domain: "bsnl.co.in" },
-  { id: "irctc", name: "IRCTC", url: "https://www.irctc.co.in", category: "India", icon: "🚆", domain: "irctc.co.in" },
+  { id: "bsnl", name: "BSNL", url: "https://www.bsnl.co.in", category: "India", icon: "📡", domain: "bsnl.co.in", useFallbackIcon: true },
+  { id: "irctc", name: "IRCTC", url: "https://www.irctc.co.in", category: "India", icon: "🚆", domain: "irctc.co.in", useFallbackIcon: true },
   { id: "paytm", name: "Paytm", url: "https://paytm.com", category: "India", icon: "💰", domain: "paytm.com" },
   { id: "phonepe", name: "PhonePe", url: "https://www.phonepe.com", category: "India", icon: "📱", domain: "phonepe.com" },
   { id: "upi", name: "UPI (NPCI)", url: "https://www.npci.org.in", category: "India", icon: "💳", domain: "npci.org.in" },
 
-  // Finance & Banking
+  // Finance
   { id: "sbi", name: "State Bank of India (SBI)", url: "https://www.onlinesbi.sbi", category: "Finance", icon: "🏦", domain: "onlinesbi.sbi" },
   { id: "hdfc", name: "HDFC Bank", url: "https://www.hdfcbank.com", category: "Finance", icon: "🏦", domain: "hdfcbank.com" },
   { id: "icici", name: "ICICI Bank", url: "https://www.icicibank.com", category: "Finance", icon: "🏦", domain: "icicibank.com" },

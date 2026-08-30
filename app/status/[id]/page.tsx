@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SERVICES } from "@/lib/services";
 import { checkUrl } from "@/lib/checker";
-import ProblemReport from "@/components/ProblemReport";
+import { getReportsForService } from "@/lib/reports";
+import ReportIssue from "@/components/ReportIssue";
 
 export const revalidate = 75;
 
@@ -33,8 +34,12 @@ export default async function ServiceStatusPage({ params }: Props) {
   }
 
   const result = await checkUrl(service.url);
+  const reports = getReportsForService(service.id);
+
   const hostname = service.domain || `${service.id}.com`;
-  const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
+  const faviconUrl = service.useFallbackIcon
+    ? null
+    : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
 
   const statusLabel =
     result.status === "up"
@@ -69,11 +74,15 @@ export default async function ServiceStatusPage({ params }: Props) {
       <div className="bg-card border border-line rounded-2xl p-6 sm:p-8">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-12 h-12 rounded-xl bg-card2 border border-line p-2 flex items-center justify-center shrink-0">
-            <img
-              src={faviconUrl}
-              alt={`${service.name} icon`}
-              className="w-8 h-8 object-contain rounded"
-            />
+            {faviconUrl ? (
+              <img
+                src={faviconUrl}
+                alt={`${service.name} icon`}
+                className="w-8 h-8 object-contain rounded"
+              />
+            ) : (
+              <span className="text-2xl">{service.icon}</span>
+            )}
           </div>
           <div>
             <h1 className="text-2xl font-bold">{service.name} Status</h1>
@@ -114,12 +123,23 @@ export default async function ServiceStatusPage({ params }: Props) {
           </div>
         </div>
 
+        {reports.length > 0 && (
+          <div className="mb-6 p-4 rounded-xl bg-down/10 border border-down/30 text-xs text-white/80">
+            <p className="font-bold text-down mb-1">User Issue Reports</p>
+            {reports.map((r) => (
+              <p key={r.issue}>
+                {r.count} {r.count === 1 ? "person" : "people"} reported <span className="font-semibold text-white">{r.issue}</span> in the last hour
+              </p>
+            ))}
+          </div>
+        )}
+
         <div className="text-xs text-white/40 leading-relaxed">
           IsItDown monitors {service.name} by sending live HTTP status requests directly from our server.
         </div>
       </div>
 
-      <ProblemReport serviceName={service.name} />
+      <ReportIssue serviceId={service.id} serviceName={service.name} />
     </div>
   );
 }

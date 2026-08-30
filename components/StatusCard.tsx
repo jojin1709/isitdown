@@ -8,6 +8,7 @@ type Props = {
   name: string;
   domain?: string;
   icon?: string;
+  useFallbackIcon?: boolean;
   category: string;
   status: "up" | "down" | "slow";
   responseTime: number | null;
@@ -25,6 +26,7 @@ export default function StatusCard({
   name,
   domain,
   icon = "🌐",
+  useFallbackIcon = false,
   category,
   status,
   responseTime,
@@ -34,7 +36,7 @@ export default function StatusCard({
   const s = STATUS_STYLES[status];
 
   const hostname = domain || `${id}.com`;
-  const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
 
   return (
     <Link
@@ -44,15 +46,15 @@ export default function StatusCard({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-6 h-6 flex items-center justify-center shrink-0">
-            {!imgError ? (
+            {useFallbackIcon || imgError ? (
+              <span className="text-xl">{icon}</span>
+            ) : (
               <img
                 src={faviconUrl}
                 alt={`${name} icon`}
                 className="w-5 h-5 object-contain rounded"
                 onError={() => setImgError(true)}
               />
-            ) : (
-              <span className="text-xl">{icon}</span>
             )}
           </div>
           <div>

@@ -9,8 +9,18 @@ export type CheckResult = {
 const TIMEOUT_MS = 8000;
 const SLOW_THRESHOLD_MS = 3000;
 
-const BROWSER_UA =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+const BROWSER_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  "Accept":
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "Sec-Fetch-User": "?1",
+  "Upgrade-Insecure-Requests": "1",
+};
 
 export async function checkUrl(url: string): Promise<CheckResult> {
   const start = Date.now();
@@ -20,21 +30,21 @@ export async function checkUrl(url: string): Promise<CheckResult> {
   try {
     let res: Response;
     try {
-      // Try HEAD first - cheaper, faster
-      res = await fetch(url, {
-        method: "HEAD",
-        signal: controller.signal,
-        redirect: "follow",
-        headers: { "User-Agent": BROWSER_UA },
-        cache: "no-store",
-      });
-    } catch {
-      // Some servers reject HEAD outright - fall back to GET
+      // Try GET first with full browser headers for strict WAFs (IRCTC, banks)
       res = await fetch(url, {
         method: "GET",
         signal: controller.signal,
         redirect: "follow",
-        headers: { "User-Agent": BROWSER_UA },
+        headers: BROWSER_HEADERS,
+        cache: "no-store",
+      });
+    } catch {
+      // Fallback attempt with HEAD
+      res = await fetch(url, {
+        method: "HEAD",
+        signal: controller.signal,
+        redirect: "follow",
+        headers: BROWSER_HEADERS,
         cache: "no-store",
       });
     }

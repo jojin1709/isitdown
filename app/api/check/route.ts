@@ -62,9 +62,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing ?url=" }, { status: 400 });
   }
 
+  let formatted = raw.trim();
+  // Auto-append .com if user enters a single word without TLD extension (e.g., 'freefire' -> 'freefire.com')
+  if (!formatted.includes(".") && !formatted.startsWith("http")) {
+    formatted = `${formatted}.com`;
+  }
+
   let target: URL;
   try {
-    target = new URL(raw.startsWith("http") ? raw : `https://${raw}`);
+    target = new URL(formatted.startsWith("http") ? formatted : `https://${formatted}`);
   } catch {
     return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
   }

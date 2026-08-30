@@ -3,7 +3,15 @@ import Link from "next/link";
 import { SERVICES } from "@/lib/services";
 import { checkUrl } from "@/lib/checker";
 import { getReportsForService } from "@/lib/reports";
+import { get24HourHistory, getMultiRegionStatus } from "@/lib/history";
+import { getIncidentHistory } from "@/lib/incidents";
 import ReportIssue from "@/components/ReportIssue";
+import ResponseTimeChart from "@/components/ResponseTimeChart";
+import MultiRegionStatus from "@/components/MultiRegionStatus";
+import RegionHeatmap from "@/components/RegionHeatmap";
+import BadgeGenerator from "@/components/BadgeGenerator";
+import OutageSubscription from "@/components/OutageSubscription";
+import IncidentHistory from "@/components/IncidentHistory";
 
 export const revalidate = 75;
 
@@ -35,6 +43,9 @@ export default async function ServiceStatusPage({ params }: Props) {
 
   const result = await checkUrl(service.url);
   const reports = getReportsForService(service.id);
+  const history = get24HourHistory(service.id, result.responseTime);
+  const multiRegion = getMultiRegionStatus(result.responseTime);
+  const incidents = getIncidentHistory(service.name);
 
   const hostname = service.domain || `${service.id}.com`;
   const faviconUrl = service.useFallbackIcon
@@ -72,21 +83,29 @@ export default async function ServiceStatusPage({ params }: Props) {
       </Link>
 
       <div className="bg-card border border-line rounded-2xl p-6 sm:p-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-card2 border border-line p-2 flex items-center justify-center shrink-0">
-            {faviconUrl ? (
-              <img
-                src={faviconUrl}
-                alt={`${service.name} icon`}
-                className="w-8 h-8 object-contain rounded"
-              />
-            ) : (
-              <span className="text-2xl">{service.icon}</span>
-            )}
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-card2 border border-line p-2 flex items-center justify-center shrink-0">
+              {faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt={`${service.name} icon`}
+                  className="w-8 h-8 object-contain rounded"
+                />
+              ) : (
+                <span className="text-2xl">{service.icon}</span>
+              )}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">{service.name} Status</h1>
+              <p className="text-xs text-white/40">{service.category} · {service.url}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold">{service.name} Status</h1>
-            <p className="text-xs text-white/40">{service.category} · {service.url}</p>
+
+          <div className="hidden sm:block">
+            <span className="px-3 py-1.5 rounded-full bg-up/10 border border-up/30 text-up text-xs font-semibold">
+              {history.uptimePercentage}% 24h Uptime
+            </span>
           </div>
         </div>
 
@@ -139,7 +158,23 @@ export default async function ServiceStatusPage({ params }: Props) {
         </div>
       </div>
 
+      <ResponseTimeChart
+        points={history.points}
+        uptimePercentage={history.uptimePercentage}
+        avgLatency={history.avgLatency}
+      />
+
+      <MultiRegionStatus regions={multiRegion} />
+
+      <RegionHeatmap serviceName={service.name} />
+
       <ReportIssue serviceId={service.id} serviceName={service.name} />
+
+      <OutageSubscription serviceId={service.id} serviceName={service.name} />
+
+      <BadgeGenerator serviceId={service.id} serviceName={service.name} />
+
+      <IncidentHistory incidents={incidents} serviceName={service.name} />
     </div>
   );
 }

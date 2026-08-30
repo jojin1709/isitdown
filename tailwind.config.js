@@ -7,10 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: "#0B0E14",
-        card: "#131722",
-        card2: "#1A1F2C",
-        line: "#242A38",
+        bg: "var(--bg, #0B0E14)",
+        card: "var(--card, #131722)",
+        card2: "var(--card2, #1A1F2C)",
+        line: "var(--line, #242A38)",
         up: "#3DDC84",
         down: "#FF4D6D",
         slow: "#FFC93D",

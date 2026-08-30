@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import StatusCard from "@/components/StatusCard";
 import CustomCheck from "@/components/CustomCheck";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type ServiceStatus = {
   id: string;
@@ -73,6 +74,10 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
+      <div className="flex justify-end mb-4">
+        <ThemeToggle />
+      </div>
+
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">
           Is it <span className="text-down">down</span>, or just you?

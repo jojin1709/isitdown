@@ -68,7 +68,16 @@ export default function Dashboard() {
           Is it <span className="text-down">down</span>, or just you?
         </h1>
         <p className="text-white/50 text-sm">
-          Live status for the apps and sites people actually check. No login, refreshes automatically.
+          Live status for the apps and sites people actually check. Developed by{" "}
+          <a
+            href="https://github.com/jojin1709"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent hover:underline font-semibold"
+          >
+            Jojin John
+          </a>
+          .
         </p>
 
         <div className="flex justify-center items-center gap-3 mt-5 flex-wrap text-xs">
@@ -153,9 +162,21 @@ export default function Dashboard() {
         </div>
       )}
 
-      <footer className="text-center text-xs text-white/25 mt-14 pt-6 border-t border-line">
-        Status checks run live against each site — a "down" here means the
-        server didn't respond properly, not a guess.
+      <footer className="text-center text-xs text-white/30 mt-14 pt-6 border-t border-line">
+        <p className="mb-1">
+          Status checks run live against each site — a "down" here means the server didn't respond properly, not a guess.
+        </p>
+        <p className="text-white/50">
+          Developed by{" "}
+          <a
+            href="https://github.com/jojin1709"
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent hover:underline font-semibold"
+          >
+            Jojin John
+          </a>
+        </p>
       </footer>
     </div>
   );

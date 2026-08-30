@@ -1,11 +1,13 @@
 > [!NOTE]
-> **[IsItDown Live Uptime Monitor](https://github.com/jojin1709/isitdown) — Check if Amazon, Instagram, WhatsApp, Gemini or any site is down right now.**
+> **[IsItDown Live Uptime Monitor](https://github.com/jojin1709/isitdown) — Developed by [Jojin John](https://github.com/jojin1709)**
 
 <div align="center">
 
 # IsItDown
 
 ### IsItDown is an autonomous, real-time website availability & server health checker.
+
+Developed by **[Jojin John](https://github.com/jojin1709)**.
 
 It performs live HTTP server connectivity checks against 40+ global and regional services, measures response latency, and lets users check any custom URL instantly.
 
@@ -28,12 +30,13 @@ It performs live HTTP server connectivity checks against 40+ global and regional
 - [API Endpoints](#api-endpoints)
 - [Deployment Guide](#deployment-guide)
 - [Configuration & Customization](#configuration--customization)
+- [Author](#author)
 - [License](#license)
 - [Common Questions](#common-questions)
 
 ## What is IsItDown?
 
-IsItDown is a modern, full-stack Next.js status monitoring application inspired by tools like Downdetector. It helps users answer one fundamental question: **"Is a service actually down, or is it just my internet connection?"**
+IsItDown is a modern, full-stack Next.js status monitoring application built by **Jojin John** and inspired by tools like Downdetector. It helps users answer one fundamental question: **"Is a service actually down, or is it just my internet connection?"**
 
 Instead of relying on crowd-sourced speculation alone, IsItDown executes real-time server-to-server HTTP HEAD/GET probes against target endpoints. It measures latency in milliseconds, inspects HTTP response status codes, and classifies service health into clear operational states.
 
@@ -196,6 +199,11 @@ Triggers an outage scan. If `ALERT_WEBHOOK_URL` is set, posts a notification to 
 | **Auto-Polling Frequency** | [`components/Dashboard.tsx`](components/Dashboard.tsx) | Change `POLL_MS` (default 60000ms / 60 seconds). |
 | **Webhook Alerts** | `.env.local` | Set `ALERT_WEBHOOK_URL=https://discord.com/api/webhooks/...` (optional). |
 
+## Author
+
+IsItDown is designed and developed by **Jojin John**.
+- **GitHub**: [@jojin1709](https://github.com/jojin1709)
+
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
@@ -203,5 +211,5 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 <p align="center">
-  <b>Built with Next.js 14, React & Tailwind CSS</b>
+  <b>Developed by <a href="https://github.com/jojin1709">Jojin John</a></b>
 </p>

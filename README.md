@@ -1,55 +1,207 @@
+> [!NOTE]
+> **[IsItDown Live Uptime Monitor](https://github.com/jojin1709/isitdown) — Check if Amazon, Instagram, WhatsApp, Gemini or any site is down right now.**
+
+<div align="center">
+
 # IsItDown
 
-Live status checker — is Amazon down, is Instagram down, or is it just you.
-No login, no database required. Checks run live against each service every
-time the page loads and every 60 seconds after.
+### IsItDown is an autonomous, real-time website availability & server health checker.
 
-## How it works
+It performs live HTTP server connectivity checks against 40+ global and regional services, measures response latency, and lets users check any custom URL instantly.
 
-- `lib/services.ts` — the list of tracked services (30+ defaults: social,
-  shopping, streaming, dev/AI, India-specific, finance)
-- `lib/checker.ts` — the actual check: sends a HEAD (falls back to GET)
-  request with a browser user-agent and an 8s timeout, times the response,
-  and classifies it:
-  - **down** — no response, timed out, or the server itself failed (502/503/504)
-  - **slow** — responded, but took over 3 seconds
-  - **up** — responded normally (even a 403/404 counts as "up" — the server
-    answered, which is what matters here, not whether that exact request
-    was allowed)
-- `/api/status` — checks every default service in parallel, returns them all
-- `/api/check?url=` — checks any custom URL a user types in, with basic
-  guards against pinging localhost/private IPs
+**This repository is the full open-source Next.js 14 App Router codebase, ready to run locally or deploy to Vercel.**
 
-## Run locally
+---
+
+</div>
+
+> [!TIP]
+> **Zero Configuration Required:** Works out of the box with zero external database dependencies. Simply clone, run `npm run dev`, or deploy directly to Vercel.
+
+## Table of Contents
+
+- [What is IsItDown?](#what-is-isitdown)
+- [Live Status Tracker](#live-status-tracker)
+- [Quick Start](#quick-start)
+- [Key Capabilities](#key-capabilities)
+- [Architecture](#architecture)
+- [API Endpoints](#api-endpoints)
+- [Deployment Guide](#deployment-guide)
+- [Configuration & Customization](#configuration--customization)
+- [License](#license)
+- [Common Questions](#common-questions)
+
+## What is IsItDown?
+
+IsItDown is a modern, full-stack Next.js status monitoring application inspired by tools like Downdetector. It helps users answer one fundamental question: **"Is a service actually down, or is it just my internet connection?"**
+
+Instead of relying on crowd-sourced speculation alone, IsItDown executes real-time server-to-server HTTP HEAD/GET probes against target endpoints. It measures latency in milliseconds, inspects HTTP response status codes, and classifies service health into clear operational states.
+
+### Why IsItDown Exists
+
+Commercial status pages are often slow to report outages or hidden behind login walls. IsItDown provides an instant, zero-login, open-source dashboard that automatically checks 40+ major platforms—including Social Media, E-Commerce, Streaming, Dev/AI tools, Telecom, and Indian Banking institutions—every 60 seconds.
+
+## Live Status Tracker
+
+IsItDown monitors 40+ services across key categories out of the box:
+
+| Category | Tracked Services |
+| --- | --- |
+| **Social** | Instagram, Facebook, WhatsApp, X (Twitter), Snapchat, Discord, Telegram, Reddit, LinkedIn, Free Fire |
+| **Shopping** | Amazon, Amazon India, Flipkart, Myntra, eBay |
+| **Streaming** | YouTube, Netflix, Spotify, Prime Video, Disney+ Hotstar, Twitch |
+| **Dev / AI** | Google Gemini, ChatGPT, Claude, GitHub, Vercel, Google, Gmail |
+| **India & Telecom** | Jio, Airtel, Vi (Vodafone Idea), BSNL, IRCTC, Paytm, PhonePe, UPI (NPCI) |
+| **Finance & Banking** | State Bank of India (SBI), HDFC Bank, ICICI Bank, Axis Bank, PayPal |
+
+## Quick Start
+
+### Prerequisites
+
+- **Node.js 18.x or higher**
+- **npm** or **yarn** / **pnpm**
+
+### Run Locally
+
+> [!WARNING]
+> Ensure your network allows outbound HTTP/HTTPS requests on ports 80 and 443 so status checks can reach target servers.
 
 ```bash
+# Clone the repository
+git clone https://github.com/jojin1709/isitdown.git
+
+# Navigate into the project folder
+cd isitdown
+
+# Install dependencies
 npm install
+
+# Start the local development server
 npm run dev
 ```
 
-## Deploy to Vercel
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the live status dashboard.
 
-1. Push to a GitHub repo
-2. vercel.com → New Project → import the repo
-3. Framework preset: Next.js (auto-detected)
-4. Deploy
+> [!TIP]
+> **Production Build:**
+> Run `npm run build` followed by `npm start` to test the production server build locally.
 
-No environment variables needed — this one just works out of the box.
+## Key Capabilities
 
-## Editing things
+- **Real-Time HTTP Probing**: Executes dual-stage HEAD requests (falling back to GET) with browser User-Agent headers to detect server health accurately.
+- **Official Brand Favicons**: Automatically fetches high-resolution brand logos via Google Favicon API with emoji fallbacks.
+- **Server-Side In-Memory Caching**: Caches batch `/api/status` checks for 75 seconds to prevent serverless function rate-limiting and ensure rapid response times.
+- **Custom Domain Checker with Rate Limiting**: Enables users to query any arbitrary website live with built-in per-IP rate limiting (10 checks/minute) and SSRF protection against private IP ranges (`127.0.0.1`, `10.x`, `192.168.x`).
+- **Per-Service SEO Pages**: Pre-renders dedicated `/status/[id]` static/dynamic pages with custom Open Graph title tags (*"Is {ServiceName} down right now? — IsItDown"*).
+- **Interactive Problem Reporting**: Allows visitors to report specific issues (App, Login, Server Connection, Feed, Website, Payments) per service.
+- **Automated Webhook Alerts**: Includes `/api/cron/check` endpoint compatible with Vercel Cron to send Discord or Slack notifications when outages occur.
+- **Smart Sorting & Filtering**: Automatically floats **Down** and **Slow** services to the top of the dashboard for immediate visibility.
 
-- Add/remove tracked services in `lib/services.ts`
-- Change timeout/slow-threshold in `lib/checker.ts`
-- Polling interval is `POLL_MS` in `components/Dashboard.tsx` (default 60s)
+## Architecture
 
-## Notes
+IsItDown follows Next.js App Router architecture with decoupled checking logic and caching layers:
 
-- Some sites (banking apps, a few social platforms) actively block
-  server-to-server requests regardless of status — if one shows "down" but
-  is actually fine for you, it likely means that specific site blocks
-  Vercel's IP ranges, not that it's genuinely down. This is inherent to any
-  server-side status checker (including commercial ones).
-- For real historical uptime graphs (not just live snapshot), you'd want to
-  add a cron job (Vercel Cron, free) that logs each check to a database
-  (Supabase, free tier) every few minutes. Not included here to keep this
-  fully zero-config — ask if you want that added.
+```text
+┌──────────────────────────────────────────────────────────┐
+│                   Next.js App Router                     │
+├────────────────────────────┬─────────────────────────────┤
+│      Frontend Client       │       API Route Handler     │
+│   (Dashboard, StatusCard,  │   (/api/status, /api/check, │
+│    CustomCheck, Filter)    │    /api/cron/check)        │
+└─────────────┬──────────────┴──────────────┬──────────────┘
+              │                             │
+              ▼                             ▼
+┌───────────────────────────┐ ┌─────────────────────────────┐
+│   SEO Per-Service Pages   │ │     Checker Core Engine     │
+│      (/status/[id])       │ │      (lib/checker.ts)       │
+└───────────────────────────┘ └──────────────┬──────────────┘
+                                             │
+                                             ▼
+                               ┌───────────────────────────┐
+                               │   Target Web Servers      │
+                               │  (40+ Tracked & Custom)   │
+                               └───────────────────────────┘
+```
+
+At a high level:
+- **`lib/services.ts`**: Defines tracked services, URLs, categories, and domain mappings.
+- **`lib/checker.ts`**: Handles timeout-managed fetch requests (8s timeout, 3s slow threshold) and classifies responses (`up`, `slow`, `down`).
+- **`app/api/status/route.ts`**: Executes parallel checks across all 40+ endpoints with 75-second in-memory caching.
+- **`app/api/check/route.ts`**: Processes custom URL checks with SSRF validation and IP rate limiting.
+- **`app/status/[id]/page.tsx`**: Dynamic server-side SEO route per tracked service.
+
+## API Endpoints
+
+### 1. Batch Status Check (`GET /api/status`)
+Returns the health status for all default tracked services. Cached server-side for 75 seconds.
+
+**Response:**
+```json
+{
+  "services": [
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "url": "https://www.instagram.com",
+      "category": "Social",
+      "domain": "instagram.com",
+      "status": "up",
+      "responseTime": 215,
+      "httpStatus": 200,
+      "checkedAt": "2026-08-30T14:55:00.000Z"
+    }
+  ],
+  "checkedAt": "2026-08-30T14:55:00.000Z"
+}
+```
+
+### 2. Custom URL Check (`GET /api/check?url=example.com`)
+Checks any custom user-submitted URL. Enforces 10 requests/minute per IP rate limit.
+
+**Response:**
+```json
+{
+  "name": "example.com",
+  "url": "https://example.com",
+  "status": "up",
+  "responseTime": 142,
+  "httpStatus": 200,
+  "checkedAt": "2026-08-30T14:55:05.000Z"
+}
+```
+
+### 3. Downtime Cron Check (`GET /api/cron/check`)
+Triggers an outage scan. If `ALERT_WEBHOOK_URL` is set, posts a notification to Discord/Slack for any down services.
+
+## Deployment Guide
+
+### Deploying to Vercel (Recommended)
+
+1. Push your repository to GitHub:
+   ```bash
+   git push origin master
+   ```
+2. Go to **[vercel.com](https://vercel.com)** ➔ **New Project** ➔ Import `isitdown`.
+3. Vercel automatically detects Next.js. Click **Deploy**.
+
+> [!NOTE]
+> **Vercel Cron Note:** The included `vercel.json` configures a daily cron job (`0 0 * * *`) compatible with Vercel's Hobby free tier.
+
+## Configuration & Customization
+
+| Item | File Location | Description |
+| --- | --- | --- |
+| **Add/Remove Services** | [`lib/services.ts`](lib/services.ts) | Modify the `SERVICES` array to add custom domains or categories. |
+| **Timeouts & Slow Thresholds** | [`lib/checker.ts`](lib/checker.ts) | Adjust `TIMEOUT_MS` (default 8s) or `SLOW_THRESHOLD_MS` (default 3s). |
+| **Auto-Polling Frequency** | [`components/Dashboard.tsx`](components/Dashboard.tsx) | Change `POLL_MS` (default 60000ms / 60 seconds). |
+| **Webhook Alerts** | `.env.local` | Set `ALERT_WEBHOOK_URL=https://discord.com/api/webhooks/...` (optional). |
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  <b>Built with Next.js 14, React & Tailwind CSS</b>
+</p>

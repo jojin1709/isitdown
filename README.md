@@ -1,5 +1,5 @@
 > [!NOTE]
-> **[IsItDown Live Uptime Monitor](https://github.com/jojin1709/isitdown) — Developed by [Jojin John](https://github.com/jojin1709)**
+> **[IsItDown Live Uptime Monitor](https://isitdown-live.vercel.app) — Developed by [Jojin John](https://github.com/jojin1709)**
 
 <div align="center">
 
@@ -11,38 +11,46 @@ Developed by **[Jojin John](https://github.com/jojin1709)**.
 
 It performs live HTTP server connectivity checks against 40+ global and regional services, measures response latency, and lets users check any custom URL instantly.
 
-**This repository is the full open-source Next.js 14 App Router codebase, ready to run locally or deploy to Vercel.**
+**[🌐 Access Live Application: https://isitdown-live.vercel.app](https://isitdown-live.vercel.app)**
 
 ---
 
 </div>
 
 > [!TIP]
-> **Zero Configuration Required:** Works out of the box with zero external database dependencies. Simply clone, run `npm run dev`, or deploy directly to Vercel.
+> **Live Deployment Active:** Access the live application directly at **[isitdown-live.vercel.app](https://isitdown-live.vercel.app)**. No registration or installation required.
 
 ## Table of Contents
 
 - [What is IsItDown?](#what-is-isitdown)
+- [Live Application](#live-application)
 - [Live Status Tracker](#live-status-tracker)
-- [Quick Start](#quick-start)
 - [Key Capabilities](#key-capabilities)
 - [Architecture](#architecture)
 - [API Endpoints](#api-endpoints)
-- [Deployment Guide](#deployment-guide)
 - [Configuration & Customization](#configuration--customization)
 - [Author](#author)
 - [License](#license)
-- [Common Questions](#common-questions)
 
 ## What is IsItDown?
 
-IsItDown is a modern, full-stack Next.js status monitoring application built by **Jojin John** and inspired by tools like Downdetector. It helps users answer one fundamental question: **"Is a service actually down, or is it just my internet connection?"**
+IsItDown is a modern status monitoring application built by **Jojin John** and inspired by tools like Downdetector. It helps users answer one fundamental question: **"Is a service actually down, or is it just my internet connection?"**
 
 Instead of relying on crowd-sourced speculation alone, IsItDown executes real-time server-to-server HTTP HEAD/GET probes against target endpoints. It measures latency in milliseconds, inspects HTTP response status codes, and classifies service health into clear operational states.
 
 ### Why IsItDown Exists
 
-Commercial status pages are often slow to report outages or hidden behind login walls. IsItDown provides an instant, zero-login, open-source dashboard that automatically checks 40+ major platforms—including Social Media, E-Commerce, Streaming, Dev/AI tools, Telecom, and Indian Banking institutions—every 60 seconds.
+Commercial status pages are often slow to report outages or hidden behind login walls. IsItDown provides an instant, zero-login dashboard that automatically checks 40+ major platforms—including Social Media, E-Commerce, Streaming, Dev/AI tools, Telecom, and Indian Banking institutions—every 60 seconds.
+
+## Live Application
+
+The application is deployed live and maintained by **Jojin John**:
+
+- **Primary Web URL**: [https://isitdown-live.vercel.app](https://isitdown-live.vercel.app)
+- **Deployment Platform**: Vercel
+
+> [!IMPORTANT]
+> The live application refreshes automatically every 60 seconds and allows testing any custom website URL live on demand.
 
 ## Live Status Tracker
 
@@ -50,44 +58,12 @@ IsItDown monitors 40+ services across key categories out of the box:
 
 | Category | Tracked Services |
 | --- | --- |
-| **Social** | Instagram, Facebook, WhatsApp, X (Twitter), Snapchat, Discord, Telegram, Reddit, LinkedIn, Free Fire |
+| **Social** | Instagram, Facebook, WhatsApp, X (Twitter), Snapchat, Discord, Telegram, Reddit, LinkedIn |
 | **Shopping** | Amazon, Amazon India, Flipkart, Myntra, eBay |
 | **Streaming** | YouTube, Netflix, Spotify, Prime Video, Disney+ Hotstar, Twitch |
 | **Dev / AI** | Google Gemini, ChatGPT, Claude, GitHub, Vercel, Google, Gmail |
 | **India & Telecom** | Jio, Airtel, Vi (Vodafone Idea), BSNL, IRCTC, Paytm, PhonePe, UPI (NPCI) |
 | **Finance & Banking** | State Bank of India (SBI), HDFC Bank, ICICI Bank, Axis Bank, PayPal |
-
-## Quick Start
-
-### Prerequisites
-
-- **Node.js 18.x or higher**
-- **npm** or **yarn** / **pnpm**
-
-### Run Locally
-
-> [!WARNING]
-> Ensure your network allows outbound HTTP/HTTPS requests on ports 80 and 443 so status checks can reach target servers.
-
-```bash
-# Clone the repository
-git clone https://github.com/jojin1709/isitdown.git
-
-# Navigate into the project folder
-cd isitdown
-
-# Install dependencies
-npm install
-
-# Start the local development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the live status dashboard.
-
-> [!TIP]
-> **Production Build:**
-> Run `npm run build` followed by `npm start` to test the production server build locally.
 
 ## Key Capabilities
 
@@ -98,7 +74,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 - **Per-Service SEO Pages**: Pre-renders dedicated `/status/[id]` static/dynamic pages with custom Open Graph title tags (*"Is {ServiceName} down right now? — IsItDown"*).
 - **Interactive Problem Reporting**: Allows visitors to report specific issues (App, Login, Server Connection, Feed, Website, Payments) per service.
 - **Automated Webhook Alerts**: Includes `/api/cron/check` endpoint compatible with Vercel Cron to send Discord or Slack notifications when outages occur.
-- **Smart Sorting & Filtering**: Automatically floats **Down** and **Slow** services to the top of the dashboard for immediate visibility.
+- **Smart Sorting & Filtering**: Sort by **Status** (Down first ➔ Slow ➔ Up) or **Speed** (Response Time ascending).
 
 ## Architecture
 
@@ -176,20 +152,6 @@ Checks any custom user-submitted URL. Enforces 10 requests/minute per IP rate li
 ### 3. Downtime Cron Check (`GET /api/cron/check`)
 Triggers an outage scan. If `ALERT_WEBHOOK_URL` is set, posts a notification to Discord/Slack for any down services.
 
-## Deployment Guide
-
-### Deploying to Vercel (Recommended)
-
-1. Push your repository to GitHub:
-   ```bash
-   git push origin master
-   ```
-2. Go to **[vercel.com](https://vercel.com)** ➔ **New Project** ➔ Import `isitdown`.
-3. Vercel automatically detects Next.js. Click **Deploy**.
-
-> [!NOTE]
-> **Vercel Cron Note:** The included `vercel.json` configures a daily cron job (`0 0 * * *`) compatible with Vercel's Hobby free tier.
-
 ## Configuration & Customization
 
 | Item | File Location | Description |
@@ -203,6 +165,7 @@ Triggers an outage scan. If `ALERT_WEBHOOK_URL` is set, posts a notification to 
 
 IsItDown is designed and developed by **Jojin John**.
 - **GitHub**: [@jojin1709](https://github.com/jojin1709)
+- **Live Site**: [https://isitdown-live.vercel.app](https://isitdown-live.vercel.app)
 
 ## License
 

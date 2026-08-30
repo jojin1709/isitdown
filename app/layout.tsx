@@ -2,9 +2,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "IsItDown — check if Amazon, Instagram, WhatsApp or anything else is down",
+  title: "IsItDown — Live Server Status & Availability Checker",
   description:
-    "Live status checker for popular apps and websites. No login. Check any custom URL too.",
+    "Real-time status monitor for Instagram, WhatsApp, Amazon, YouTube, ChatGPT, and custom websites. Live health metrics without logging in.",
 };
 
 export default function RootLayout({
@@ -13,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-bg text-white font-sans min-h-screen">
+    <html lang="en" className="dark">
+      <body className="bg-bg text-white font-sans min-h-screen antialiased selection:bg-blue-500/30 selection:text-blue-300">
         {children}
       </body>
     </html>

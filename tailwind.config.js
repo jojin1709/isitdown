@@ -7,18 +7,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: "#090d16",
-        card: "#111622",
-        card2: "#182030",
-        line: "rgba(255, 255, 255, 0.08)",
+        bg: "#0B0E14",
+        card: "#131722",
+        card2: "#1A1F2C",
+        line: "#242A38",
         up: "#3DDC84",
         down: "#FF4D6D",
         slow: "#FFC93D",
-        accent: "#3B82F6",
-        accentHover: "#2563EB",
+        accent: "#5B8CFF",
       },
       fontFamily: {
-        sans: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
       },
     },
   },

@@ -63,12 +63,30 @@ export async function checkUrl(url: string): Promise<CheckResult> {
     };
   } catch (err: any) {
     clearTimeout(timer);
+
+    const isDnsError =
+      err?.code === "ENOTFOUND" ||
+      err?.cause?.code === "ENOTFOUND" ||
+      err?.cause?.syscall === "getaddrinfo" ||
+      (typeof err?.message === "string" &&
+        (err.message.includes("ENOTFOUND") ||
+          err.message.includes("getaddrinfo") ||
+          err.message.includes("Failed to parse URL") ||
+          err.message.includes("invalid URL")));
+
+    let errorMessage = "unreachable";
+    if (err?.name === "AbortError") {
+      errorMessage = "timed out";
+    } else if (isDnsError) {
+      errorMessage = "domain not found";
+    }
+
     return {
       status: "down",
       responseTime: null,
       httpStatus: null,
       checkedAt: new Date().toISOString(),
-      error: err?.name === "AbortError" ? "timed out" : "unreachable",
+      error: errorMessage,
     };
   }
 }

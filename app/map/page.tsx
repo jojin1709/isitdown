@@ -1,41 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Globe, Scale, Zap, Radio, CheckCircle2, AlertCircle } from "lucide-react";
-
-type ProbeNode = {
-  id: string;
-  name: string;
-  region: string;
-  flag: string;
-  x: number; // SVG % coord
-  y: number; // SVG % coord
-  latency: number;
-  status: "up" | "slow" | "down";
-  incidentsCount: number;
-};
-
-const INITIAL_NODES: ProbeNode[] = [
-  { id: "us-east", name: "Ashburn (US-East)", region: "North America", flag: "US", x: 250, y: 190, latency: 45, status: "up", incidentsCount: 0 },
-  { id: "us-west", name: "Silicon Valley (US-West)", region: "North America", flag: "US", x: 170, y: 200, latency: 62, status: "up", incidentsCount: 0 },
-  { id: "eu-central", name: "Frankfurt", region: "Europe", flag: "DE", x: 510, y: 170, latency: 38, status: "up", incidentsCount: 0 },
-  { id: "eu-west", name: "London", region: "Europe", flag: "GB", x: 480, y: 160, latency: 41, status: "up", incidentsCount: 0 },
-  { id: "in-south", name: "Mumbai", region: "Asia-Pacific", flag: "IN", x: 670, y: 260, latency: 18, status: "up", incidentsCount: 0 },
-  { id: "in-north", name: "Delhi NCR", region: "Asia-Pacific", flag: "IN", x: 680, y: 235, latency: 22, status: "up", incidentsCount: 0 },
-  { id: "ap-east", name: "Tokyo", region: "Asia-Pacific", flag: "JP", x: 830, y: 215, latency: 85, status: "up", incidentsCount: 0 },
-  { id: "ap-se", name: "Singapore", region: "Asia-Pacific", flag: "SG", x: 740, y: 310, latency: 34, status: "up", incidentsCount: 0 },
-  { id: "au-east", name: "Sydney", region: "Oceania", flag: "AU", x: 860, y: 400, latency: 125, status: "up", incidentsCount: 0 },
-  { id: "sa-east", name: "São Paulo", region: "South America", flag: "BR", x: 340, y: 380, latency: 140, status: "up", incidentsCount: 0 },
-  { id: "af-south", name: "Johannesburg", region: "Africa", flag: "ZA", x: 540, y: 390, latency: 165, status: "up", incidentsCount: 0 },
-];
+import { getRealWorldMapPaths, PROBE_CITIES, CityNode } from "@/lib/worldMapData";
 
 export default function WorldMapPage() {
-  const [nodes, setNodes] = useState<ProbeNode[]>(INITIAL_NODES);
-  const [selectedNode, setSelectedNode] = useState<ProbeNode | null>(INITIAL_NODES[4]);
+  const [nodes, setNodes] = useState<(CityNode & { x: number; y: number })[]>([]);
+  const [selectedNode, setSelectedNode] = useState<(CityNode & { x: number; y: number }) | null>(null);
   const [downServicesCount, setDownServicesCount] = useState(0);
 
+  const mapData = useMemo(() => {
+    return getRealWorldMapPaths(960, 500);
+  }, []);
+
   useEffect(() => {
+    setNodes(mapData.projectedNodes);
+    setSelectedNode(mapData.projectedNodes[4]); // Default to Mumbai
+
     async function loadStatus() {
       try {
         const res = await fetch("/api/status");
@@ -59,11 +41,11 @@ export default function WorldMapPage() {
       }
     }
     loadStatus();
-  }, []);
+  }, [mapData]);
 
   const totalActiveNodes = nodes.length;
   const avgGlobalLatency = Math.round(
-    nodes.reduce((acc, n) => acc + n.latency, 0) / nodes.length
+    nodes.reduce((acc, n) => acc + n.latency, 0) / (nodes.length || 1)
   );
 
   return (
@@ -88,13 +70,13 @@ export default function WorldMapPage() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-line text-xs font-semibold text-accent mb-3">
           <Globe className="w-3.5 h-3.5" />
-          <span>Global Edge Network Live Map</span>
+          <span>Global Edge Network Live Telemetry</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">
-          Interactive Outage & Latency <span className="text-accent">World Map</span>
+          Real-Time Global Outage & Latency <span className="text-accent">World Map</span>
         </h1>
         <p className="text-white/50 text-sm max-w-xl mx-auto">
-          Live visualization of global server health, Edge probe telemetry, and active regional disruption epicenters.
+          Geographically accurate natural Earth projection tracking active global connectivity nodes, latency jitter, and regional outage epicenters.
         </p>
 
         <div className="flex justify-center items-center gap-3 mt-5 flex-wrap text-xs">
@@ -128,86 +110,78 @@ export default function WorldMapPage() {
         </div>
       </div>
 
-      {/* Interactive World Map SVG Container */}
-      <div className="bg-card border border-line rounded-3xl p-4 sm:p-8 mb-8 relative overflow-hidden">
-        <div className="relative w-full aspect-[16/9] min-h-[340px] max-h-[560px]">
+      {/* Realistic GeoJSON SVG Map Canvas */}
+      <div className="bg-card border border-line rounded-3xl p-4 sm:p-6 mb-8 relative overflow-hidden shadow-2xl">
+        <div className="relative w-full aspect-[1.92/1] min-h-[360px]">
           <svg
-            viewBox="0 0 1000 500"
-            className="w-full h-full"
-            style={{ filter: "drop-shadow(0 0 20px rgba(0,0,0,0.5))" }}
+            viewBox="0 0 960 500"
+            className="w-full h-full select-none"
+            style={{ filter: "drop-shadow(0 0 30px rgba(0,0,0,0.8))" }}
           >
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#171717" strokeWidth="0.8" />
-              </pattern>
-            </defs>
-
-            {/* Grid Backdrop */}
-            <rect width="1000" height="500" fill="url(#grid)" />
-
-            {/* Simplified Vector Continents */}
-            {/* North America */}
+            {/* Ocean Sphere Background */}
             <path
-              d="M 120 120 Q 200 80 280 130 T 260 250 T 180 270 T 110 180 Z"
-              fill="#0D0D0D"
-              stroke="#262626"
-              strokeWidth="1.5"
-            />
-            {/* South America */}
-            <path
-              d="M 270 280 Q 360 300 370 380 T 310 470 T 260 350 Z"
-              fill="#0D0D0D"
-              stroke="#262626"
-              strokeWidth="1.5"
-            />
-            {/* Europe */}
-            <path
-              d="M 460 120 Q 560 110 570 180 T 480 220 T 440 160 Z"
-              fill="#0D0D0D"
-              stroke="#262626"
-              strokeWidth="1.5"
-            />
-            {/* Africa */}
-            <path
-              d="M 460 230 Q 580 220 570 340 T 520 440 T 450 310 Z"
-              fill="#0D0D0D"
-              stroke="#262626"
-              strokeWidth="1.5"
-            />
-            {/* Asia */}
-            <path
-              d="M 580 110 Q 820 90 850 220 T 720 330 T 600 240 Z"
-              fill="#0D0D0D"
-              stroke="#262626"
-              strokeWidth="1.5"
-            />
-            {/* Australia */}
-            <path
-              d="M 780 340 Q 880 330 890 410 T 800 440 Z"
-              fill="#0D0D0D"
-              stroke="#262626"
+              d={mapData.spherePath}
+              fill="#06080C"
+              stroke="#1C212B"
               strokeWidth="1.5"
             />
 
-            {/* Connection Lines connecting probes */}
+            {/* Lat/Long Grid Graticules */}
             <path
-              d="M 250 190 L 510 170 L 670 260 L 740 310 L 860 400"
+              d={mapData.graticulePath}
               fill="none"
-              stroke="#5B8CFF"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-              opacity="0.3"
-            />
-            <path
-              d="M 250 190 L 340 380 L 540 390 L 670 260"
-              fill="none"
-              stroke="#5B8CFF"
-              strokeWidth="1"
-              strokeDasharray="4 4"
-              opacity="0.2"
+              stroke="#151A24"
+              strokeWidth="0.75"
+              strokeDasharray="2 3"
             />
 
-            {/* Nodes */}
+            {/* Real World Country Polygons */}
+            <g className="countries-layer">
+              {mapData.countryPaths.map((c) => (
+                <path
+                  key={c.id}
+                  d={c.d}
+                  fill="#111620"
+                  stroke="#202938"
+                  strokeWidth="0.8"
+                  className="transition-colors hover:fill-[#1A2232] cursor-pointer"
+                />
+              ))}
+            </g>
+
+            {/* Telemetry Interconnect Mesh Lines */}
+            <g className="mesh-lines opacity-40">
+              <path
+                d="M 305 140 L 498 126 L 682 225 L 759 295 L 852 387"
+                fill="none"
+                stroke="#5B8CFF"
+                strokeWidth="1.2"
+                strokeDasharray="4 4"
+              />
+              <path
+                d="M 305 140 L 388 343 L 553 351 L 682 225"
+                fill="none"
+                stroke="#5B8CFF"
+                strokeWidth="1.2"
+                strokeDasharray="4 4"
+              />
+              <path
+                d="M 197 145 L 305 140"
+                fill="none"
+                stroke="#5B8CFF"
+                strokeWidth="1.2"
+                strokeDasharray="4 4"
+              />
+              <path
+                d="M 682 225 L 834 148"
+                fill="none"
+                stroke="#5B8CFF"
+                strokeWidth="1.2"
+                strokeDasharray="4 4"
+              />
+            </g>
+
+            {/* Telemetry Probe Pins & Radar Waves */}
             {nodes.map((n) => {
               const isSelected = selectedNode?.id === n.id;
               const isIncident = n.incidentsCount > 0;
@@ -216,53 +190,67 @@ export default function WorldMapPage() {
               return (
                 <g
                   key={n.id}
-                  className="cursor-pointer transition-all"
+                  className="cursor-pointer group"
                   onClick={() => setSelectedNode(n)}
                 >
-                  {/* Outer Radar Wave */}
+                  {/* Ping Radar Wave */}
                   <circle
                     cx={n.x}
                     cy={n.y}
-                    r={isSelected ? 18 : 12}
+                    r={isSelected ? 18 : 11}
                     fill={nodeColor}
-                    opacity="0.15"
+                    opacity="0.2"
                     className="animate-ping"
-                    style={{ animationDuration: isIncident ? "1.2s" : "2.5s" }}
+                    style={{ animationDuration: isIncident ? "1s" : "2.5s" }}
                   />
 
                   {/* Core Node Circle */}
                   <circle
                     cx={n.x}
                     cy={n.y}
-                    r={isSelected ? 7 : 5}
+                    r={isSelected ? 6 : 4}
                     fill={nodeColor}
                     stroke="#000000"
-                    strokeWidth="2"
+                    strokeWidth="1.5"
+                    className="transition-transform group-hover:scale-125"
                   />
 
-                  {/* Node Text Label */}
-                  <text
-                    x={n.x + 10}
-                    y={n.y + 4}
-                    fill="#E2E8F0"
-                    fontSize={isSelected ? "12" : "10"}
-                    fontFamily="sans-serif"
-                    fontWeight={isSelected ? "700" : "500"}
-                  >
-                    {n.flag} {n.name.split(" ")[0]}
-                  </text>
+                  {/* Clean City Name Callout */}
+                  <g transform={`translate(${n.x + 8}, ${n.y + 3})`}>
+                    <rect
+                      x="-2"
+                      y="-10"
+                      width={n.name.split(" ")[0].length * 7 + 10}
+                      height="14"
+                      fill="#0D1117"
+                      rx="3"
+                      opacity="0.85"
+                      stroke="#262626"
+                      strokeWidth="0.5"
+                    />
+                    <text
+                      x="3"
+                      y="0"
+                      fill={isSelected ? "#5B8CFF" : "#CBD5E1"}
+                      fontSize="9"
+                      fontFamily="monospace"
+                      fontWeight="bold"
+                    >
+                      {n.name.split(" ")[0]}
+                    </text>
+                  </g>
                 </g>
               );
             })}
           </svg>
         </div>
 
-        {/* Selected Node Details Box */}
+        {/* Selected Probe City Telemetry Card */}
         {selectedNode && (
           <div className="mt-4 bg-card2 border border-line p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="px-3 py-1.5 rounded-xl bg-card border border-line font-mono font-bold text-accent text-sm">
-                {selectedNode.flag}
+                {selectedNode.code}
               </span>
               <div>
                 <div className="flex items-center gap-2">
@@ -274,7 +262,7 @@ export default function WorldMapPage() {
                   </span>
                 </div>
                 <p className="text-xs text-white/60 mt-0.5">
-                  Edge Probe ID: <span className="font-mono text-accent">{selectedNode.id}</span> · Real-time socket telemetry active
+                  Edge Probe ID: <span className="font-mono text-accent">{selectedNode.id}</span> · Coordinates: <span className="font-mono text-white/50">{selectedNode.coordinates[1].toFixed(2)}°N, {selectedNode.coordinates[0].toFixed(2)}°E</span>
                 </p>
               </div>
             </div>
@@ -299,7 +287,7 @@ export default function WorldMapPage() {
         )}
       </div>
 
-      {/* Regional Nodes Table */}
+      {/* Regional Nodes Directory */}
       <div className="bg-card2 border border-line rounded-2xl p-6">
         <h3 className="text-sm font-bold text-white mb-4">
           Global Telemetry Probes Directory
@@ -318,7 +306,7 @@ export default function WorldMapPage() {
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-sm font-semibold text-white flex items-center gap-2">
                   <span className="px-1.5 py-0.5 rounded bg-card border border-line text-[10px] font-mono text-accent">
-                    {n.flag}
+                    {n.code}
                   </span>
                   <span>{n.name}</span>
                 </span>

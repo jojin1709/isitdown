@@ -4,11 +4,10 @@ import { SERVICES } from "@/lib/services";
 import { checkUrl } from "@/lib/checker";
 import { inspectDomain } from "@/lib/diagnostics";
 import { getReportsForService } from "@/lib/reports";
-import { get24HourHistory, getMultiRegionStatus } from "@/lib/history";
+import { get24HourHistory } from "@/lib/history";
 import { getIncidentHistory } from "@/lib/incidents";
 import ReportIssue from "@/components/ReportIssue";
 import ResponseTimeChart from "@/components/ResponseTimeChart";
-import MultiRegionStatus from "@/components/MultiRegionStatus";
 import RegionHeatmap from "@/components/RegionHeatmap";
 import BadgeGenerator from "@/components/BadgeGenerator";
 import OutageSubscription from "@/components/OutageSubscription";
@@ -55,7 +54,6 @@ export default async function ServiceStatusPage({ params }: Props) {
 
   const reports = getReportsForService(service.id);
   const history = get24HourHistory(service.id, result.responseTime);
-  const multiRegion = getMultiRegionStatus(result.responseTime);
   const incidents = getIncidentHistory(service.name);
 
   const hostname = service.domain || `${service.id}.com`;
@@ -216,8 +214,6 @@ export default async function ServiceStatusPage({ params }: Props) {
           serviceName={service.name}
         />
       )}
-
-      <MultiRegionStatus regions={multiRegion} />
 
       <RegionHeatmap serviceName={service.name} />
 

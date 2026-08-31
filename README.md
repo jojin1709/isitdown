@@ -68,6 +68,12 @@ IsItDown monitors 40+ services across key categories out of the box:
 ## Key Capabilities
 
 - **Real-Time HTTP Probing**: Executes dual-stage HEAD requests (falling back to GET) with browser User-Agent headers to detect server health accurately.
+- **Live Interactive Outage World Map (`/map`)**: Full-screen interactive SVG world map showing Edge probe telemetry, active incident epicenters, and latency radar waves.
+- **Public DNS Records Inspector**: Live Node.js DNS resolver inspecting A, AAAA, MX, NS, TXT, and SOA records for any domain.
+- **TCP Port & Service Scanner**: Real-time socket scanner testing Port 22 (SSH), 80/443 (Web), 3306/5432 (Databases), 587/993 (Mail), and 8080/3000 (Custom Apps).
+- **1-Click "Proof of Outage" SLA Incident Exporter**: Generates downloadable high-resolution SLA verification certificate images with UTC timestamps, response latency, HTTP codes, and cryptographic incident hashes.
+- **Predictive Outage Risk & Latency Anomaly Detector**: Real-time jitter and variance calculator measuring standard deviation to forecast degradation risk.
+- **Discord & Slack Webhook Instant Alerts**: In-app webhook tester and live alert dispatcher delivering embed incident notifications directly to team channels.
 - **Multi-Continent Global Ping Probes**: Real-time Edge DNS and ping latency probes across 5 continents (North America, Europe, Asia-Pacific, Oceania, South America).
 - **AI Outage Reason & Root Cause Explainer**: Automatically classifies server failures (502 Bad Gateway, 503 Overload, 504 Timeout, DNS NXDOMAIN) with plain-English fault attribution and troubleshooting terminal commands.
 - **"Is It Just You?" Local Connection & ISP Diagnostics**: 1-click in-browser network benchmark measuring local Wi-Fi latency, jitter, and DNS health to verify whether connectivity issues are local or remote.
@@ -78,8 +84,8 @@ IsItDown monitors 40+ services across key categories out of the box:
 - **Global Outage Live Banner**: Real-time persistent incident banner highlighting multi-platform degradation and ongoing service outages.
 - **1-Click Outage Sharing**: Instantly post live outage statuses and diagnostic results to Twitter/X, WhatsApp, LinkedIn, Reddit, or clipboard.
 - **Head-to-Head Comparison Tool (`/compare`)**: Side-by-side availability and latency benchmarking between competing platforms (e.g. *ChatGPT vs Claude*, *Amazon vs Flipkart*, *Jio vs Airtel*).
-- **SEO & Discovery Engine**: Dynamic `sitemap.ts` and `robots.ts` indexing, alongside dynamic OpenGraph share preview cards generated via `@vercel/og` (`next/og`).
-- **Official Brand Favicons**: Automatically fetches high-resolution brand logos via Google Favicon API with emoji fallbacks.
+- **SEO & Discovery Engine**: Expanded `sitemap.ts` and `robots.ts` indexing with crawler rules for Googlebot, Bingbot, Twitterbot, Discordbot, and dynamic OpenGraph share preview cards generated via `@vercel/og` (`next/og`).
+- **Official Brand Favicons**: Automatically fetches high-resolution brand logos via Google Favicon API with fallback icons.
 - **Server-Side In-Memory Caching**: Caches batch `/api/status` checks for 75 seconds to prevent serverless function rate-limiting and ensure rapid response times.
 - **Custom Domain Checker with Rate Limiting**: Enables users to query any arbitrary website live with built-in per-IP rate limiting (10 checks/minute) and SSRF protection against private IP ranges (`127.0.0.1`, `10.x`, `192.168.x`).
 - **Per-Service SEO Pages**: Pre-renders dedicated `/status/[id]` static/dynamic pages with custom Open Graph title tags (*"Is {ServiceName} down right now? — IsItDown"*).

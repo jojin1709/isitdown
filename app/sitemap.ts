@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "hourly",
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/map`,
+      lastModified: now,
+      changeFrequency: "always",
+      priority: 0.85,
+    },
   ];
 
   const serviceRoutes: MetadataRoute.Sitemap = SERVICES.map((svc) => ({

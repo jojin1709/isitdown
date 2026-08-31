@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkUrl } from "@/lib/checker";
 import { inspectDomain } from "@/lib/diagnostics";
+import { inspectDnsRecords } from "@/lib/dnsInspector";
+import { scanTargetPorts } from "@/lib/portScanner";
 
 export const dynamic = "force-dynamic";
 
@@ -80,9 +82,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "URL not allowed" }, { status: 400 });
   }
 
-  const [result, diagnostics] = await Promise.all([
+  const [result, diagnostics, dnsData, portData] = await Promise.all([
     checkUrl(target.toString()),
     inspectDomain(target.toString()).catch(() => undefined),
+    inspectDnsRecords(target.hostname).catch(() => undefined),
+    scanTargetPorts(target.hostname).catch(() => undefined),
   ]);
 
   const userAgent = req.headers.get("user-agent") || "";
@@ -120,5 +124,7 @@ export async function GET(req: NextRequest) {
     url: target.toString(),
     ...result,
     diagnostics,
+    dnsRecords: dnsData?.records || [],
+    ports: portData || [],
   });
 }

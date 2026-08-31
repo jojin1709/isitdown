@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { Scale, ArrowLeft } from "lucide-react";
 import { SERVICES } from "@/lib/services";
 import { checkUrl } from "@/lib/checker";
 import { inspectDomain } from "@/lib/diagnostics";
+import { inspectDnsRecords } from "@/lib/dnsInspector";
+import { scanTargetPorts } from "@/lib/portScanner";
 import { getReportsForService } from "@/lib/reports";
 import { get24HourHistory } from "@/lib/history";
 import { getIncidentHistory } from "@/lib/incidents";
@@ -18,6 +21,11 @@ import GlobalContinentProbes from "@/components/GlobalContinentProbes";
 import OutageExplainerCard from "@/components/OutageExplainerCard";
 import SecurityAuditCard from "@/components/SecurityAuditCard";
 import OutageDurationTicker from "@/components/OutageDurationTicker";
+import DnsRecordsCard from "@/components/DnsRecordsCard";
+import PortScannerCard from "@/components/PortScannerCard";
+import ProofOfOutageExporter from "@/components/ProofOfOutageExporter";
+import OutageRiskCard from "@/components/OutageRiskCard";
+import WebhookTester from "@/components/WebhookTester";
 
 export const revalidate = 75;
 
@@ -47,16 +55,19 @@ export default async function ServiceStatusPage({ params }: Props) {
     notFound();
   }
 
-  const [result, diagnostics] = await Promise.all([
+  const hostname = service.domain || `${service.id}.com`;
+
+  const [result, diagnostics, dnsData, portData] = await Promise.all([
     checkUrl(service.url, service.name),
     inspectDomain(service.url).catch(() => undefined),
+    inspectDnsRecords(hostname).catch(() => undefined),
+    scanTargetPorts(hostname).catch(() => undefined),
   ]);
 
   const reports = getReportsForService(service.id);
   const history = get24HourHistory(service.id, result.responseTime);
   const incidents = getIncidentHistory(service.name);
 
-  const hostname = service.domain || `${service.id}.com`;
   const faviconUrl = service.useFallbackIcon
     ? null
     : `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;
@@ -89,13 +100,15 @@ export default async function ServiceStatusPage({ params }: Props) {
           href="/"
           className="inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors"
         >
-          ← Back to all services
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to all services</span>
         </Link>
         <Link
           href={`/compare?service1=${service.id}`}
           className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
         >
-          ⚖️ Compare with other services
+          <Scale className="w-3.5 h-3.5" />
+          <span>Compare with other services</span>
         </Link>
       </div>
 
@@ -197,8 +210,23 @@ export default async function ServiceStatusPage({ params }: Props) {
         avgLatency={history.avgLatency}
       />
 
+      <OutageRiskCard
+        points={history.points}
+        currentLatency={result.responseTime}
+        serviceName={service.name}
+        status={result.status}
+      />
+
       {diagnostics && (
         <DiagnosticsCard diagnostics={diagnostics} serviceName={service.name} />
+      )}
+
+      {dnsData?.records && dnsData.records.length > 0 && (
+        <DnsRecordsCard records={dnsData.records} domain={hostname} />
+      )}
+
+      {portData && portData.length > 0 && (
+        <PortScannerCard ports={portData} host={hostname} />
       )}
 
       {diagnostics?.continentProbes && (
@@ -215,9 +243,19 @@ export default async function ServiceStatusPage({ params }: Props) {
         />
       )}
 
+      <ProofOfOutageExporter
+        serviceName={service.name}
+        url={service.url}
+        status={result.status}
+        responseTime={result.responseTime}
+        httpStatus={result.httpStatus}
+      />
+
       <RegionHeatmap serviceName={service.name} />
 
       <ReportIssue serviceId={service.id} serviceName={service.name} />
+
+      <WebhookTester serviceName={service.name} />
 
       <OutageSubscription serviceId={service.id} serviceName={service.name} />
 

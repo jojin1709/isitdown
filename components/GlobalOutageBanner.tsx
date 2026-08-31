@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AlertTriangle, AlertCircle } from "lucide-react";
 import OutageDurationTicker from "@/components/OutageDurationTicker";
 
 type DownService = {
@@ -34,10 +35,16 @@ export default function GlobalOutageBanner({ services }: Props) {
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start sm:items-center gap-3">
-          <span className="text-2xl shrink-0">{isCritical ? "🚨" : "⚠️"}</span>
+          <div className="p-2 rounded-xl bg-card border border-line/60 shrink-0">
+            {isCritical ? (
+              <AlertCircle className="w-6 h-6 text-down animate-pulse" />
+            ) : (
+              <AlertTriangle className="w-6 h-6 text-slow" />
+            )}
+          </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className="font-extrabold text-sm sm:text-base tracking-wide">
+              <span className="font-extrabold text-sm sm:text-base tracking-wide text-white">
                 {isCritical
                   ? `Live Outage Alert: ${downList.length} Service${
                       downList.length > 1 ? "s" : ""

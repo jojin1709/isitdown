@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Bell, CheckCircle2 } from "lucide-react";
 
 type Props = {
   serviceId: string;
@@ -31,17 +32,21 @@ export default function OutageSubscription({ serviceId, serviceName }: Props) {
 
   return (
     <div className="bg-card2 border border-line rounded-2xl p-6 mt-6">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-accent font-bold text-lg">🔔</span>
-        <h3 className="text-sm font-bold text-white">Get Instant Outage Alerts</h3>
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+          <Bell className="w-5 h-5 text-accent" />
+        </div>
+        <div>
+          <h3 className="text-sm font-bold text-white">Get Instant Outage Alerts</h3>
+          <p className="text-xs text-white/50">
+            Receive an instant email alert if {serviceName} experiences a major downtime
+          </p>
+        </div>
       </div>
-      <p className="text-xs text-white/50 mb-4">
-        Receive an instant email alert if {serviceName} experiences a major downtime:
-      </p>
 
       {subscribed ? (
-        <div className="bg-up/10 border border-up/30 rounded-xl p-3.5 text-xs text-up font-semibold flex items-center gap-2">
-          <span>✓</span>
+        <div className="mt-4 bg-up/10 border border-up/30 rounded-xl p-3.5 text-xs text-up font-semibold flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-up shrink-0" />
           <span>Subscribed! You will be notified if {serviceName} goes down.</span>
         </div>
       ) : (

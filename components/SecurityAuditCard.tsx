@@ -1,5 +1,6 @@
 "use client";
 
+import { Shield } from "lucide-react";
 import { SecurityAuditResult } from "@/lib/headerAudit";
 
 type Props = {
@@ -23,7 +24,9 @@ export default function SecurityAuditCard({ audit, serviceName }: Props) {
     <div className="bg-card2 border border-line rounded-2xl p-6 mt-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <span className="text-xl">🛡️</span>
+          <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+            <Shield className="w-5 h-5 text-accent" />
+          </div>
           <div>
             <h3 className="text-sm font-bold text-white">
               Security & HTTP Headers Health Audit

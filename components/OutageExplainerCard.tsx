@@ -1,5 +1,6 @@
 "use client";
 
+import { Cpu, Wrench } from "lucide-react";
 import { OutageAnalysis } from "@/lib/outageExplainer";
 
 type Props = {
@@ -22,7 +23,9 @@ export default function OutageExplainerCard({ analysis, serviceName }: Props) {
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">{isCritical ? "🧠" : "🔍"}</span>
+          <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+            <Cpu className="w-5 h-5 text-accent" />
+          </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-bold text-white">
@@ -52,7 +55,7 @@ export default function OutageExplainerCard({ analysis, serviceName }: Props) {
 
       <div className="space-y-2">
         <p className="text-xs font-bold text-white flex items-center gap-1.5">
-          <span>🛠️</span>
+          <Wrench className="w-3.5 h-3.5 text-accent" />
           <span>Troubleshooting & Next Steps</span>
         </p>
 

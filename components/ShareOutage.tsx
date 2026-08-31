@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Share2, Copy, Check } from "lucide-react";
 
 type Props = {
   serviceName: string;
@@ -28,10 +29,10 @@ export default function ShareOutage({
 
   const statusText =
     status === "down"
-      ? "🚨 DOWN and unreachable"
+      ? "DOWN and unreachable"
       : status === "slow"
-      ? "⚠️ experiencing slow response latency"
-      : "✅ UP and fully operational";
+      ? "experiencing slow response latency"
+      : "UP and fully operational";
 
   const latencySnippet = responseTime ? ` (${responseTime}ms)` : "";
   const shareMessage = `Is ${serviceName} down for everyone or just me? Currently ${statusText}${latencySnippet}. Check live status here: ${currentUrl}`;
@@ -58,8 +59,10 @@ export default function ShareOutage({
   return (
     <div className="bg-card2 border border-line rounded-2xl p-5 mt-6">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-accent font-bold text-lg">📢</span>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+            <Share2 className="w-5 h-5 text-accent" />
+          </div>
           <div>
             <h3 className="text-sm font-bold text-white">Share Live Status</h3>
             <p className="text-xs text-white/50">
@@ -70,9 +73,19 @@ export default function ShareOutage({
 
         <button
           onClick={handleCopy}
-          className="px-3 py-1.5 rounded-xl bg-card border border-line hover:border-accent text-white text-xs font-semibold transition-all flex items-center gap-1.5"
+          className="px-3.5 py-2 rounded-xl bg-card border border-line hover:border-accent text-white text-xs font-semibold transition-all flex items-center gap-1.5"
         >
-          <span>{copied ? "✓ Copied!" : "📋 Copy Info"}</span>
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5 text-up" />
+              <span>Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5 text-accent" />
+              <span>Copy Info</span>
+            </>
+          )}
         </button>
       </div>
 
@@ -83,7 +96,7 @@ export default function ShareOutage({
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-card border border-line hover:border-[#1DA1F2]/50 hover:bg-[#1DA1F2]/10 text-white text-xs font-semibold transition-all"
         >
-          <span className="text-sm">𝕏</span>
+          <span className="font-bold">𝕏</span>
           <span>Post on X</span>
         </a>
 
@@ -93,7 +106,6 @@ export default function ShareOutage({
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-card border border-line hover:border-[#25D366]/50 hover:bg-[#25D366]/10 text-white text-xs font-semibold transition-all"
         >
-          <span className="text-sm">💬</span>
           <span>WhatsApp</span>
         </a>
 
@@ -103,7 +115,6 @@ export default function ShareOutage({
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-card border border-line hover:border-[#0A66C2]/50 hover:bg-[#0A66C2]/10 text-white text-xs font-semibold transition-all"
         >
-          <span className="text-sm">💼</span>
           <span>LinkedIn</span>
         </a>
 
@@ -113,7 +124,6 @@ export default function ShareOutage({
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-card border border-line hover:border-[#FF4500]/50 hover:bg-[#FF4500]/10 text-white text-xs font-semibold transition-all"
         >
-          <span className="text-sm">🤖</span>
           <span>Reddit</span>
         </a>
       </div>

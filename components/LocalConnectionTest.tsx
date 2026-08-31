@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Wifi, Activity, Zap } from "lucide-react";
 
 type TestResult = {
   latency: number;
@@ -72,7 +73,9 @@ export default function LocalConnectionTest() {
     <div className="bg-card2 border border-line rounded-2xl p-5 mb-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="text-xl">📶</span>
+          <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+            <Wifi className="w-5 h-5 text-accent" />
+          </div>
           <div>
             <h3 className="text-sm font-bold text-white">
               Is It Just You? Test Your Internet & ISP
@@ -94,7 +97,10 @@ export default function LocalConnectionTest() {
               <span>Pinging Gateway...</span>
             </>
           ) : (
-            <span>🚀 Run Connection Test</span>
+            <>
+              <Zap className="w-3.5 h-3.5 text-accent" />
+              <span>Run Connection Test</span>
+            </>
           )}
         </button>
       </div>

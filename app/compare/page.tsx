@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Scale, Zap, ArrowRight } from "lucide-react";
 import { SERVICES, ServiceDef } from "@/lib/services";
 
 type ServiceCheck = {
@@ -19,12 +20,12 @@ type ServiceCheck = {
 };
 
 const PRESET_BATTLES = [
-  { label: "🤖 ChatGPT vs Claude", s1: "chatgpt", s2: "claude" },
-  { label: "🛒 Amazon vs Flipkart", s1: "amazonin", s2: "flipkart" },
-  { label: "📡 Jio vs Airtel", s1: "jio", s2: "airtel" },
-  { label: "🏦 HDFC vs SBI", s1: "hdfc", s2: "sbi" },
-  { label: "🎬 Netflix vs Prime Video", s1: "netflix", s2: "primevideo" },
-  { label: "💬 WhatsApp vs Telegram", s1: "whatsapp", s2: "telegram" },
+  { label: "ChatGPT vs Claude", s1: "chatgpt", s2: "claude" },
+  { label: "Amazon vs Flipkart", s1: "amazonin", s2: "flipkart" },
+  { label: "Jio vs Airtel", s1: "jio", s2: "airtel" },
+  { label: "HDFC vs SBI", s1: "hdfc", s2: "sbi" },
+  { label: "Netflix vs Prime Video", s1: "netflix", s2: "primevideo" },
+  { label: "WhatsApp vs Telegram", s1: "whatsapp", s2: "telegram" },
 ];
 
 function CompareContent() {
@@ -107,7 +108,8 @@ function CompareContent() {
 
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-line text-xs font-semibold text-accent mb-3">
-          <span>⚖️ Head-to-Head Reliability Benchmark</span>
+          <Scale className="w-3.5 h-3.5" />
+          <span>Head-to-Head Reliability Benchmark</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">
           Service Uptime & Latency <span className="text-accent">Comparison</span>
@@ -123,7 +125,7 @@ function CompareContent() {
           <button
             key={b.label}
             onClick={() => applyPreset(b.s1, b.s2)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all ${
               s1Id === b.s1 && s2Id === b.s2
                 ? "bg-accent border-accent text-white"
                 : "bg-card border-line text-white/60 hover:border-white/30"

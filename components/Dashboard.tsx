@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { Globe, Scale } from "lucide-react";
 import StatusCard from "@/components/StatusCard";
 import CustomCheck from "@/components/CustomCheck";
 import GlobalOutageBanner from "@/components/GlobalOutageBanner";
@@ -76,13 +77,20 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
-      <div className="flex items-center justify-end mb-4">
+      <div className="flex items-center justify-end gap-2.5 mb-4">
+        <Link
+          href="/map"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-card border border-line hover:border-accent text-white/80 hover:text-white text-xs font-semibold transition-all"
+        >
+          <Globe className="w-3.5 h-3.5 text-accent" />
+          <span>Global Map</span>
+        </Link>
         <Link
           href="/compare"
           className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-card border border-line hover:border-accent text-white/80 hover:text-white text-xs font-semibold transition-all"
         >
-          <span>⚖️</span>
-          <span>Compare Services</span>
+          <Scale className="w-3.5 h-3.5 text-accent" />
+          <span>Compare</span>
         </Link>
       </div>
 

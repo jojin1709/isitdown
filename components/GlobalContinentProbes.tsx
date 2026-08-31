@@ -1,5 +1,6 @@
 "use client";
 
+import { Globe } from "lucide-react";
 import { ContinentProbe } from "@/lib/diagnostics";
 
 type Props = {
@@ -13,8 +14,10 @@ export default function GlobalContinentProbes({ probes, serviceName }: Props) {
   return (
     <div className="bg-card2 border border-line rounded-2xl p-6 mt-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-        <div className="flex items-center gap-2">
-          <span className="text-accent font-bold text-lg">🌐</span>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+            <Globe className="w-5 h-5 text-accent" />
+          </div>
           <div>
             <h3 className="text-sm font-bold text-white">
               Multi-Continent Global Ping Probes

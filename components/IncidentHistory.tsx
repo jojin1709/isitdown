@@ -1,5 +1,6 @@
 "use client";
 
+import { History } from "lucide-react";
 import { Incident } from "@/lib/incidents";
 
 type Props = {
@@ -12,15 +13,19 @@ export default function IncidentHistory({ incidents, serviceName }: Props) {
 
   return (
     <div className="bg-card2 border border-line rounded-2xl p-6 mt-6">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-accent font-bold text-lg">📜</span>
-        <h3 className="text-sm font-bold text-white">Recent Incident History</h3>
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2 rounded-xl bg-card border border-line shrink-0">
+          <History className="w-5 h-5 text-accent" />
+        </div>
+        <div>
+          <h3 className="text-sm font-bold text-white">Recent Incident History</h3>
+          <p className="text-xs text-white/50">
+            Log of verified downtime events and network status updates for {serviceName}
+          </p>
+        </div>
       </div>
-      <p className="text-xs text-white/50 mb-4">
-        Log of verified downtime events and network status updates for {serviceName}:
-      </p>
 
-      <div className="space-y-3">
+      <div className="space-y-3 mt-4">
         {incidents.map((inc) => (
           <div
             key={inc.id}

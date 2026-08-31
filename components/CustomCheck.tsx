@@ -1,12 +1,18 @@
 import { useState } from "react";
+import { Globe } from "lucide-react";
 import DiagnosticsCard from "@/components/DiagnosticsCard";
 import ShareOutage from "@/components/ShareOutage";
 import GlobalContinentProbes from "@/components/GlobalContinentProbes";
 import OutageExplainerCard from "@/components/OutageExplainerCard";
 import SecurityAuditCard from "@/components/SecurityAuditCard";
+import DnsRecordsCard from "@/components/DnsRecordsCard";
+import PortScannerCard from "@/components/PortScannerCard";
+import ProofOfOutageExporter from "@/components/ProofOfOutageExporter";
 import { DiagnosticsResult } from "@/lib/diagnostics";
 import { SecurityAuditResult } from "@/lib/headerAudit";
 import { OutageAnalysis } from "@/lib/outageExplainer";
+import { DnsRecordItem } from "@/lib/dnsInspector";
+import { PortStatus } from "@/lib/portScanner";
 
 type Result = {
   name: string;
@@ -18,6 +24,8 @@ type Result = {
   diagnostics?: DiagnosticsResult;
   securityAudit?: SecurityAuditResult;
   outageAnalysis?: OutageAnalysis | null;
+  dnsRecords?: DnsRecordItem[];
+  ports?: PortStatus[];
 };
 
 export default function CustomCheck() {
@@ -92,7 +100,7 @@ export default function CustomCheck() {
                     onError={() => setImgError(true)}
                   />
                 ) : (
-                  <span className="text-base">🌐</span>
+                  <Globe className="w-4 h-4 text-accent" />
                 )}
               </div>
               <div>
@@ -149,6 +157,20 @@ export default function CustomCheck() {
             />
           )}
 
+          {result.dnsRecords && result.dnsRecords.length > 0 && (
+            <DnsRecordsCard
+              records={result.dnsRecords}
+              domain={result.name}
+            />
+          )}
+
+          {result.ports && result.ports.length > 0 && (
+            <PortScannerCard
+              ports={result.ports}
+              host={result.name}
+            />
+          )}
+
           {result.diagnostics?.continentProbes && (
             <GlobalContinentProbes
               probes={result.diagnostics.continentProbes}
@@ -162,6 +184,14 @@ export default function CustomCheck() {
               serviceName={result.name}
             />
           )}
+
+          <ProofOfOutageExporter
+            serviceName={result.name}
+            url={result.url}
+            status={result.status}
+            responseTime={result.responseTime}
+            httpStatus={result.httpStatus}
+          />
 
           <ShareOutage
             serviceName={result.name}

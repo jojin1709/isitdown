@@ -1,5 +1,6 @@
 "use client";
 
+import { Activity } from "lucide-react";
 import { HistoryPoint } from "@/lib/history";
 
 type Props = {
@@ -36,10 +37,12 @@ export default function ResponseTimeChart({ points, uptimePercentage, avgLatency
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-accent font-bold text-lg">📈</span>
+            <div className="p-1.5 rounded-lg bg-card border border-line">
+              <Activity className="w-4 h-4 text-accent" />
+            </div>
             <h3 className="text-sm font-bold text-white">24-Hour Response Latency</h3>
           </div>
-          <p className="text-xs text-white/50">Average response time over the last 24 hours</p>
+          <p className="text-xs text-white/50 mt-0.5">Average response time over the last 24 hours</p>
         </div>
 
         <div className="flex items-center gap-3">

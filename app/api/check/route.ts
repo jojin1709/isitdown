@@ -85,6 +85,36 @@ export async function GET(req: NextRequest) {
     inspectDomain(target.toString()).catch(() => undefined),
   ]);
 
+  const userAgent = req.headers.get("user-agent") || "";
+  const isCurl = userAgent.toLowerCase().startsWith("curl");
+
+  if (isCurl) {
+    const isUp = result.status === "up";
+    const isSlow = result.status === "slow";
+    const statusLabel = isUp ? "\x1b[32m[ OPERATIONAL ]\x1b[0m" : isSlow ? "\x1b[33m[ SLOW RESPONSE ]\x1b[0m" : "\x1b[31m[ DOWN / UNREACHABLE ]\x1b[0m";
+    const sslStr = diagnostics?.ssl ? `${diagnostics.ssl.valid ? "\x1b[32mValid\x1b[0m" : "\x1b[31mInvalid\x1b[0m"} (${diagnostics.ssl.issuer}) - Expires in ${diagnostics.ssl.daysRemaining}d` : "None";
+    const secStr = result.securityAudit ? `Grade ${result.securityAudit.grade} (${result.securityAudit.score}/100)` : "—";
+
+    const ascii = `
+\x1b[36m┌──────────────────────────────────────────────────────────────┐
+│  ⚡ IsItDown CLI Prober — Live Server Health Monitor         │
+├──────────────────────────────────────────────────────────────┤\x1b[0m
+  Target Host:  \x1b[1m${target.hostname}\x1b[0m
+  URL:          ${target.toString()}
+  Status:       ${statusLabel} ${result.httpStatus ? `(HTTP ${result.httpStatus})` : ""}
+  Latency:      \x1b[33m${result.responseTime != null ? `${result.responseTime} ms` : "—"}\x1b[0m
+  SSL Protocol: ${sslStr}
+  Security:     ${secStr}
+  DNS Lookup:   ${diagnostics?.timings.dnsLookupMs ?? "—"} ms
+  TTFB:         ${diagnostics?.timings.ttfbMs ?? "—"} ms
+\x1b[36m└──────────────────────────────────────────────────────────────┘\x1b[0m
+`.trim() + "\n";
+
+    return new NextResponse(ascii, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  }
+
   return NextResponse.json({
     name: target.hostname,
     url: target.toString(),

@@ -1,9 +1,14 @@
+import { auditHeaders, SecurityAuditResult } from "./headerAudit";
+import { explainOutage, OutageAnalysis } from "./outageExplainer";
+
 export type CheckResult = {
   status: "up" | "down" | "slow";
   responseTime: number | null;
   httpStatus: number | null;
   checkedAt: string;
   error?: string;
+  securityAudit?: SecurityAuditResult;
+  outageAnalysis?: OutageAnalysis | null;
 };
 
 const TIMEOUT_MS = 8000;
@@ -22,7 +27,7 @@ const BROWSER_HEADERS = {
   "Upgrade-Insecure-Requests": "1",
 };
 
-export async function checkUrl(url: string): Promise<CheckResult> {
+export async function checkUrl(url: string, serviceName?: string): Promise<CheckResult> {
   const start = Date.now();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -52,24 +57,19 @@ export async function checkUrl(url: string): Promise<CheckResult> {
     const responseTime = Date.now() - start;
     clearTimeout(timer);
 
-    // A 4xx/most 5xx still means "the server answered" - the site is up.
-    // Only true server failure (502/503/504) or no response at all means down.
     const isDown = [502, 503, 504].includes(res.status);
+    const status = isDown ? "down" : responseTime > SLOW_THRESHOLD_MS ? "slow" : "up";
 
-    if (isDown) {
-      return {
-        status: "down",
-        responseTime,
-        httpStatus: res.status,
-        checkedAt: new Date().toISOString(),
-      };
-    }
+    const securityAudit = auditHeaders(res.headers);
+    const outageAnalysis = explainOutage(status, res.status, undefined, serviceName || new URL(url).hostname);
 
     return {
-      status: responseTime > SLOW_THRESHOLD_MS ? "slow" : "up",
+      status,
       responseTime,
       httpStatus: res.status,
       checkedAt: new Date().toISOString(),
+      securityAudit,
+      outageAnalysis,
     };
   } catch (err: any) {
     clearTimeout(timer);
@@ -91,12 +91,22 @@ export async function checkUrl(url: string): Promise<CheckResult> {
       errorMessage = "domain not found";
     }
 
+    let hostname = "Target server";
+    try {
+      hostname = new URL(url.startsWith("http") ? url : `https://${url}`).hostname;
+    } catch {
+      hostname = url;
+    }
+
+    const outageAnalysis = explainOutage("down", null, errorMessage, serviceName || hostname);
+
     return {
       status: "down",
       responseTime: null,
       httpStatus: null,
       checkedAt: new Date().toISOString(),
       error: errorMessage,
+      outageAnalysis,
     };
   }
 }

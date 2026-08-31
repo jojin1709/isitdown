@@ -15,6 +15,10 @@ import OutageSubscription from "@/components/OutageSubscription";
 import IncidentHistory from "@/components/IncidentHistory";
 import DiagnosticsCard from "@/components/DiagnosticsCard";
 import ShareOutage from "@/components/ShareOutage";
+import GlobalContinentProbes from "@/components/GlobalContinentProbes";
+import OutageExplainerCard from "@/components/OutageExplainerCard";
+import SecurityAuditCard from "@/components/SecurityAuditCard";
+import OutageDurationTicker from "@/components/OutageDurationTicker";
 
 export const revalidate = 75;
 
@@ -45,7 +49,7 @@ export default async function ServiceStatusPage({ params }: Props) {
   }
 
   const [result, diagnostics] = await Promise.all([
-    checkUrl(service.url),
+    checkUrl(service.url, service.name),
     inspectDomain(service.url).catch(() => undefined),
   ]);
 
@@ -117,7 +121,8 @@ export default async function ServiceStatusPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="hidden sm:block">
+          <div className="hidden sm:flex items-center gap-2">
+            <OutageDurationTicker status={result.status} />
             <span className="px-3 py-1.5 rounded-full bg-up/10 border border-up/30 text-up text-xs font-semibold">
               {history.uptimePercentage}% 24h Uptime
             </span>
@@ -173,6 +178,13 @@ export default async function ServiceStatusPage({ params }: Props) {
         </div>
       </div>
 
+      {result.outageAnalysis && (
+        <OutageExplainerCard
+          analysis={result.outageAnalysis}
+          serviceName={service.name}
+        />
+      )}
+
       <ShareOutage
         serviceName={service.name}
         serviceId={service.id}
@@ -189,6 +201,20 @@ export default async function ServiceStatusPage({ params }: Props) {
 
       {diagnostics && (
         <DiagnosticsCard diagnostics={diagnostics} serviceName={service.name} />
+      )}
+
+      {diagnostics?.continentProbes && (
+        <GlobalContinentProbes
+          probes={diagnostics.continentProbes}
+          serviceName={service.name}
+        />
+      )}
+
+      {result.securityAudit && (
+        <SecurityAuditCard
+          audit={result.securityAudit}
+          serviceName={service.name}
+        />
       )}
 
       <MultiRegionStatus regions={multiRegion} />

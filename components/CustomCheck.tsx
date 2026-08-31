@@ -1,9 +1,12 @@
-"use client";
-
 import { useState } from "react";
 import DiagnosticsCard from "@/components/DiagnosticsCard";
 import ShareOutage from "@/components/ShareOutage";
+import GlobalContinentProbes from "@/components/GlobalContinentProbes";
+import OutageExplainerCard from "@/components/OutageExplainerCard";
+import SecurityAuditCard from "@/components/SecurityAuditCard";
 import { DiagnosticsResult } from "@/lib/diagnostics";
+import { SecurityAuditResult } from "@/lib/headerAudit";
+import { OutageAnalysis } from "@/lib/outageExplainer";
 
 type Result = {
   name: string;
@@ -13,6 +16,8 @@ type Result = {
   httpStatus: number | null;
   error?: string;
   diagnostics?: DiagnosticsResult;
+  securityAudit?: SecurityAuditResult;
+  outageAnalysis?: OutageAnalysis | null;
 };
 
 export default function CustomCheck() {
@@ -130,9 +135,30 @@ export default function CustomCheck() {
             </div>
           </div>
 
+          {result.outageAnalysis && (
+            <OutageExplainerCard
+              analysis={result.outageAnalysis}
+              serviceName={result.name}
+            />
+          )}
+
           {result.diagnostics && (
             <DiagnosticsCard
               diagnostics={result.diagnostics}
+              serviceName={result.name}
+            />
+          )}
+
+          {result.diagnostics?.continentProbes && (
+            <GlobalContinentProbes
+              probes={result.diagnostics.continentProbes}
+              serviceName={result.name}
+            />
+          )}
+
+          {result.securityAudit && (
+            <SecurityAuditCard
+              audit={result.securityAudit}
               serviceName={result.name}
             />
           )}

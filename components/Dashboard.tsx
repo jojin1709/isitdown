@@ -5,6 +5,7 @@ import Link from "next/link";
 import StatusCard from "@/components/StatusCard";
 import CustomCheck from "@/components/CustomCheck";
 import GlobalOutageBanner from "@/components/GlobalOutageBanner";
+import LocalConnectionTest from "@/components/LocalConnectionTest";
 
 type ServiceStatus = {
   id: string;
@@ -141,6 +142,8 @@ export default function Dashboard() {
       </div>
 
       <GlobalOutageBanner services={services} />
+
+      <LocalConnectionTest />
 
       <div className="mb-8">
         <CustomCheck />

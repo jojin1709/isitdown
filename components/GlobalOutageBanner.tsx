@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import OutageDurationTicker from "@/components/OutageDurationTicker";
 
 type DownService = {
   id: string;
@@ -35,7 +36,7 @@ export default function GlobalOutageBanner({ services }: Props) {
         <div className="flex items-start sm:items-center gap-3">
           <span className="text-2xl shrink-0">{isCritical ? "🚨" : "⚠️"}</span>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
               <span className="font-extrabold text-sm sm:text-base tracking-wide">
                 {isCritical
                   ? `Live Outage Alert: ${downList.length} Service${
@@ -45,15 +46,9 @@ export default function GlobalOutageBanner({ services }: Props) {
                       slowList.length > 1 ? "s" : ""
                     } Slow`}
               </span>
-              <span
-                className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                  isCritical ? "bg-down text-white" : "bg-slow text-black"
-                }`}
-              >
-                Ongoing
-              </span>
+              <OutageDurationTicker status={isCritical ? "down" : "slow"} />
             </div>
-            <p className="text-xs text-white/70 mt-1">
+            <p className="text-xs text-white/70">
               Active connectivity disruptions detected via live server probes.
             </p>
           </div>

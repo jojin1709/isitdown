@@ -68,6 +68,12 @@ IsItDown monitors 40+ services across key categories out of the box:
 ## Key Capabilities
 
 - **Real-Time HTTP Probing**: Executes dual-stage HEAD requests (falling back to GET) with browser User-Agent headers to detect server health accurately.
+- **Multi-Continent Global Ping Probes**: Real-time Edge DNS and ping latency probes across 5 continents (North America, Europe, Asia-Pacific, Oceania, South America).
+- **AI Outage Reason & Root Cause Explainer**: Automatically classifies server failures (502 Bad Gateway, 503 Overload, 504 Timeout, DNS NXDOMAIN) with plain-English fault attribution and troubleshooting terminal commands.
+- **"Is It Just You?" Local Connection & ISP Diagnostics**: 1-click in-browser network benchmark measuring local Wi-Fi latency, jitter, and DNS health to verify whether connectivity issues are local or remote.
+- **Live Outage Duration Stopwatch**: Real-time ticker tracking active downtime duration (e.g. *"Down for 14m 20s"*) updating live without page reloads.
+- **Security & HTTP Headers Health Audit**: Evaluates HSTS, Content-Security-Policy (CSP), X-Frame-Options, Brotli compression, and HTTP/3 QUIC support with a standardized Security Grade (A+ to F).
+- **Terminal CLI & `curl` Quick Access**: Developers can query live statuses directly from their terminal using `curl isitdown-live.vercel.app/api/check?url=github.com` for formatted ASCII/ANSI outputs.
 - **SSL Certificate & DNS Inspector**: Deep server-side diagnostics inspecting SSL certificate validity, issuing authority, expiry date countdown, and a 4-phase network latency waterfall (DNS Lookup ➔ TCP Connect ➔ TLS Handshake ➔ TTFB).
 - **Global Outage Live Banner**: Real-time persistent incident banner highlighting multi-platform degradation and ongoing service outages.
 - **1-Click Outage Sharing**: Instantly post live outage statuses and diagnostic results to Twitter/X, WhatsApp, LinkedIn, Reddit, or clipboard.

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkUrl } from "@/lib/checker";
+import { inspectDomain } from "@/lib/diagnostics";
 
 export const dynamic = "force-dynamic";
 
@@ -79,11 +80,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "URL not allowed" }, { status: 400 });
   }
 
-  const result = await checkUrl(target.toString());
+  const [result, diagnostics] = await Promise.all([
+    checkUrl(target.toString()),
+    inspectDomain(target.toString()).catch(() => undefined),
+  ]);
 
   return NextResponse.json({
     name: target.hostname,
     url: target.toString(),
     ...result,
+    diagnostics,
   });
 }

@@ -2,39 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root,
-[data-theme="dark"] {
-  --bg: #0B0E14;
-  --card: #131722;
-  --card2: #1A1F2C;
-  --line: #242A38;
-}
-
-[data-theme="oled"] {
+:root {
   --bg: #000000;
   --card: #0D0D0D;
   --card2: #171717;
   --line: #262626;
 }
 
-[data-theme="navy"] {
-  --bg: #0F172A;
-  --card: #1E293B;
-  --card2: #334155;
-  --line: #475569;
-}
-
-[data-theme="cyberpunk"] {
-  --bg: #0D1117;
-  --card: #161B22;
-  --card2: #21262D;
-  --line: #30363D;
-}
-
 body {
   background-color: var(--bg);
   color: #ffffff;
-  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 @keyframes pulse-dot {

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import DiagnosticsCard from "@/components/DiagnosticsCard";
+import ShareOutage from "@/components/ShareOutage";
+import { DiagnosticsResult } from "@/lib/diagnostics";
 
 type Result = {
   name: string;
@@ -9,6 +12,7 @@ type Result = {
   responseTime: number | null;
   httpStatus: number | null;
   error?: string;
+  diagnostics?: DiagnosticsResult;
 };
 
 export default function CustomCheck() {
@@ -71,58 +75,74 @@ export default function CustomCheck() {
       {error && <p className="text-down text-xs mt-3">{error}</p>}
 
       {result && (
-        <div className="mt-4 flex items-center justify-between bg-card border border-line rounded-xl px-4 py-3">
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 flex items-center justify-center shrink-0">
-              {!imgError ? (
-                <img
-                  src={getFaviconUrl(result.url)}
-                  alt={`${result.name} favicon`}
-                  className="w-5 h-5 object-contain rounded"
-                  onError={() => setImgError(true)}
-                />
-              ) : (
-                <span className="text-base">🌐</span>
-              )}
+        <div className="mt-4 space-y-4">
+          <div className="flex items-center justify-between bg-card border border-line rounded-xl px-4 py-3">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 flex items-center justify-center shrink-0">
+                {!imgError ? (
+                  <img
+                    src={getFaviconUrl(result.url)}
+                    alt={`${result.name} favicon`}
+                    className="w-5 h-5 object-contain rounded"
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  <span className="text-base">🌐</span>
+                )}
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{result.name}</p>
+                <p className="text-[11px] text-white/40 truncate max-w-[220px]">
+                  {result.url}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-semibold">{result.name}</p>
-              <p className="text-[11px] text-white/40 truncate max-w-[220px]">
-                {result.url}
-              </p>
+
+            <div className="text-right">
+              {result.error === "domain not found" ? (
+                <p className="text-xs text-down font-medium max-w-[280px]">
+                  Couldn't find that domain — check the spelling (e.g. claude.ai, not just 'claude')
+                </p>
+              ) : (
+                <>
+                  <p
+                    className={`text-sm font-semibold ${
+                      result.status === "up"
+                        ? "text-up"
+                        : result.status === "slow"
+                        ? "text-slow"
+                        : "text-down"
+                    }`}
+                  >
+                    {result.status === "up"
+                      ? "It's up"
+                      : result.status === "slow"
+                      ? "Up, but slow"
+                      : "Looks down"}
+                  </p>
+                  <p className="text-[11px] text-white/40">
+                    {result.responseTime != null
+                      ? `${result.responseTime}ms`
+                      : result.error || "—"}
+                  </p>
+                </>
+              )}
             </div>
           </div>
 
-          <div className="text-right">
-            {result.error === "domain not found" ? (
-              <p className="text-xs text-down font-medium max-w-[280px]">
-                Couldn't find that domain — check the spelling (e.g. claude.ai, not just 'claude')
-              </p>
-            ) : (
-              <>
-                <p
-                  className={`text-sm font-semibold ${
-                    result.status === "up"
-                      ? "text-up"
-                      : result.status === "slow"
-                      ? "text-slow"
-                      : "text-down"
-                  }`}
-                >
-                  {result.status === "up"
-                    ? "It's up"
-                    : result.status === "slow"
-                    ? "Up, but slow"
-                    : "Looks down"}
-                </p>
-                <p className="text-[11px] text-white/40">
-                  {result.responseTime != null
-                    ? `${result.responseTime}ms`
-                    : result.error || "—"}
-                </p>
-              </>
-            )}
-          </div>
+          {result.diagnostics && (
+            <DiagnosticsCard
+              diagnostics={result.diagnostics}
+              serviceName={result.name}
+            />
+          )}
+
+          <ShareOutage
+            serviceName={result.name}
+            url={result.url}
+            status={result.status}
+            responseTime={result.responseTime}
+          />
         </div>
       )}
     </div>

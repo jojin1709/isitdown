@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import StatusCard from "@/components/StatusCard";
 import CustomCheck from "@/components/CustomCheck";
-import ThemeToggle from "@/components/ThemeToggle";
+import GlobalOutageBanner from "@/components/GlobalOutageBanner";
 
 type ServiceStatus = {
   id: string;
@@ -74,8 +75,14 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10">
-      <div className="flex justify-end mb-4">
-        <ThemeToggle />
+      <div className="flex items-center justify-end mb-4">
+        <Link
+          href="/compare"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-card border border-line hover:border-accent text-white/80 hover:text-white text-xs font-semibold transition-all"
+        >
+          <span>⚖️</span>
+          <span>Compare Services</span>
+        </Link>
       </div>
 
       <div className="text-center mb-10">
@@ -132,6 +139,8 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+
+      <GlobalOutageBanner services={services} />
 
       <div className="mb-8">
         <CustomCheck />

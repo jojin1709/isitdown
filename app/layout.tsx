@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://isitdown-live.vercel.app"),
   title: "IsItDown — Live Server Status & Availability Checker",
   description:
     "Real-time status monitor for Instagram, WhatsApp, Amazon, YouTube, ChatGPT, and custom websites. Live health metrics without logging in.",

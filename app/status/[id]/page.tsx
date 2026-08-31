@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SERVICES } from "@/lib/services";
 import { checkUrl } from "@/lib/checker";
+import { inspectDomain } from "@/lib/diagnostics";
 import { getReportsForService } from "@/lib/reports";
 import { get24HourHistory, getMultiRegionStatus } from "@/lib/history";
 import { getIncidentHistory } from "@/lib/incidents";
@@ -12,6 +13,8 @@ import RegionHeatmap from "@/components/RegionHeatmap";
 import BadgeGenerator from "@/components/BadgeGenerator";
 import OutageSubscription from "@/components/OutageSubscription";
 import IncidentHistory from "@/components/IncidentHistory";
+import DiagnosticsCard from "@/components/DiagnosticsCard";
+import ShareOutage from "@/components/ShareOutage";
 
 export const revalidate = 75;
 
@@ -41,7 +44,11 @@ export default async function ServiceStatusPage({ params }: Props) {
     notFound();
   }
 
-  const result = await checkUrl(service.url);
+  const [result, diagnostics] = await Promise.all([
+    checkUrl(service.url),
+    inspectDomain(service.url).catch(() => undefined),
+  ]);
+
   const reports = getReportsForService(service.id);
   const history = get24HourHistory(service.id, result.responseTime);
   const multiRegion = getMultiRegionStatus(result.responseTime);
@@ -75,12 +82,20 @@ export default async function ServiceStatusPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-white mb-8 transition-colors"
-      >
-        ← Back to all services
-      </Link>
+      <div className="flex items-center justify-between mb-8">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors"
+        >
+          ← Back to all services
+        </Link>
+        <Link
+          href={`/compare?service1=${service.id}`}
+          className="inline-flex items-center gap-1.5 text-xs text-accent hover:underline font-semibold"
+        >
+          ⚖️ Compare with other services
+        </Link>
+      </div>
 
       <div className="bg-card border border-line rounded-2xl p-6 sm:p-8">
         <div className="flex items-center justify-between gap-4 mb-6">
@@ -158,11 +173,23 @@ export default async function ServiceStatusPage({ params }: Props) {
         </div>
       </div>
 
+      <ShareOutage
+        serviceName={service.name}
+        serviceId={service.id}
+        url={service.url}
+        status={result.status}
+        responseTime={result.responseTime}
+      />
+
       <ResponseTimeChart
         points={history.points}
         uptimePercentage={history.uptimePercentage}
         avgLatency={history.avgLatency}
       />
+
+      {diagnostics && (
+        <DiagnosticsCard diagnostics={diagnostics} serviceName={service.name} />
+      )}
 
       <MultiRegionStatus regions={multiRegion} />
 
